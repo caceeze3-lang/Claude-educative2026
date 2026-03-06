@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Kids — Jardín</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--sky:#a8d8ea;--sky2:#d4f1f9;--purple:#7c4dff;--purple2:#b388ff;--yellow:#ffe066;--orange:#ffb347;--pink:#ff80ab;--teal:#4dd0e1;--green:#69f0ae;--red:#ff5252;--white:#fff;--text:#3a2a5c;--soft:#f9f0ff;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 55%,#c8f0c8 78%,#7bc67e 100%);min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.cloud{position:absolute;background:white;border-radius:50px;opacity:.88;animation:cmove linear infinite;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%;}
+.c1{width:110px;height:36px;top:8%;left:-130px;animation-duration:22s;}
+.c1::before{width:55px;height:55px;top:-22px;left:12px;}.c1::after{width:40px;height:40px;top:-14px;left:50px;}
+.c2{width:85px;height:28px;top:19%;left:-100px;animation-duration:31s;animation-delay:-9s;}
+.c2::before{width:42px;height:42px;top:-18px;left:9px;}.c2::after{width:32px;height:32px;top:-12px;left:37px;}
+.c3{width:140px;height:44px;top:4%;left:-160px;animation-duration:26s;animation-delay:-16s;}
+.c3::before{width:65px;height:65px;top:-28px;left:18px;}.c3::after{width:50px;height:50px;top:-18px;left:65px;}
+@keyframes cmove{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
+.sun{position:absolute;top:18px;right:28px;width:68px;height:68px;background:radial-gradient(circle,#ffe566,#ffb300);border-radius:50%;box-shadow:0 0 0 12px rgba(255,220,0,.2),0 0 0 24px rgba(255,220,0,.1);animation:sp 3s ease-in-out infinite;}
+@keyframes sp{0%,100%{box-shadow:0 0 0 12px rgba(255,220,0,.2),0 0 0 24px rgba(255,220,0,.1)}50%{box-shadow:0 0 0 18px rgba(255,220,0,.25),0 0 0 36px rgba(255,220,0,.08)}}
+.bf{position:absolute;animation:flutter linear infinite;font-size:1.4em;}
+.bf1{top:24%;left:13%;animation-duration:8s;}.bf2{top:38%;right:10%;animation-duration:12s;animation-delay:-4s;}
+@keyframes flutter{0%{transform:translate(0,0) rotate(-5deg)}25%{transform:translate(10px,-14px) rotate(5deg)}50%{transform:translate(20px,0) rotate(-5deg)}75%{transform:translate(10px,14px) rotate(5deg)}100%{transform:translate(0,0) rotate(-5deg)}}
+.si{position:absolute;animation:twinkle ease-in-out infinite;font-size:1em;}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
+.confetti-wrap.show{display:block;}
+.cf{position:absolute;width:10px;height:10px;border-radius:2px;animation:cffall linear forwards;}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.app{position:relative;z-index:1;max-width:420px;margin:0 auto;padding:13px 13px 20px;min-height:100vh;display:flex;flex-direction:column;gap:12px;}
+.header{background:rgba(255,255,255,.88);border-radius:24px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(124,77,255,.15);backdrop-filter:blur(12px);}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-ic{width:38px;height:38px;background:linear-gradient(135deg,var(--purple2),var(--purple));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2em;box-shadow:0 3px 10px rgba(124,77,255,.35);}
+.lname{font-size:1em;font-weight:900;color:var(--purple);}
+.llv{font-size:.7em;font-weight:700;color:var(--teal);}
+.uchip{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#f3e5ff,#e8f5ff);border-radius:20px;padding:5px 12px 5px 5px;border:1.5px solid rgba(179,136,255,.3);}
+.uav{width:32px;height:32px;background:linear-gradient(135deg,var(--pink),var(--orange));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1em;}
+.unm{font-size:.78em;font-weight:800;color:var(--text);}
+.day-strip{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.day-strip::-webkit-scrollbar{display:none}
+.daypill{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:.78em;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;border:2px solid transparent;}
+.daypill.study{background:linear-gradient(135deg,var(--purple),#9c27b0);color:white;box-shadow:0 3px 10px rgba(124,77,255,.3);}
+.daypill.rest{background:linear-gradient(135deg,var(--green),var(--teal));color:var(--text);box-shadow:0 3px 10px rgba(105,240,174,.3);}
+.daypill.science{background:linear-gradient(135deg,#ff9800,#ff5722);color:white;box-shadow:0 3px 10px rgba(255,152,0,.3);}
+.daypill:not(.study):not(.rest):not(.science){background:rgba(255,255,255,.7);color:#888;border-color:rgba(179,136,255,.2);}
+.claude-scene{background:linear-gradient(160deg,rgba(179,136,255,.22),rgba(77,208,225,.18));border:2px solid rgba(179,136,255,.3);border-radius:28px;padding:18px 14px;text-align:center;box-shadow:0 8px 32px rgba(124,77,255,.15);backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+.claude-scene::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(179,136,255,.08);border-radius:50%;}
+.claude-char{display:inline-block;margin-bottom:8px;}
+.claude-char.happy{animation:bounce 2.5s ease-in-out infinite;}
+.claude-char.thinking{animation:sway 3s ease-in-out infinite;}
+.claude-char.excited{animation:wiggle .5s ease-in-out infinite;}
+.claude-char.proud{animation:float-up 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(-8deg) scale(1.05)}50%{transform:rotate(8deg) scale(1.1)}}
+@keyframes float-up{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.05)}}
+.mood-label{display:inline-block;background:rgba(255,255,255,.4);border-radius:20px;padding:3px 12px;font-size:.7em;font-weight:800;color:var(--purple);margin-bottom:8px;backdrop-filter:blur(4px);}
+.bubble{background:white;border-radius:20px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,.08);margin:0 6px;border:2px solid rgba(179,136,255,.22);position:relative;}
+.bubble::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);border:10px solid transparent;border-bottom-color:rgba(179,136,255,.22);border-top:none;}
+.bubble::after{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-bottom-color:white;border-top:none;}
+.btxt{font-size:1em;font-weight:800;color:var(--text);line-height:1.4;}
+.btxt span{color:var(--purple);}
+.tdots{display:flex;gap:4px;justify-content:center;margin-top:6px;}
+.tdot{width:7px;height:7px;background:var(--purple2);border-radius:50%;animation:td 1.4s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.expr-row{display:flex;gap:7px;justify-content:center;margin-top:10px;}
+.expr-btn{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;font-size:1.2em;transition:transform .15s;background:rgba(255,255,255,.5);}
+.expr-btn:active{transform:scale(.9);}
+.expr-btn.on{background:var(--purple);transform:scale(1.1);}
+.prog-card{background:rgba(255,255,255,.9);border-radius:22px;padding:15px 17px;box-shadow:0 4px 16px rgba(124,77,255,.1);border:2px solid rgba(179,136,255,.18);}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.ptitle{font-size:.88em;font-weight:900;color:var(--text);}
+.ppts{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#6d3d00;font-size:.75em;font-weight:900;padding:4px 10px;border-radius:20px;box-shadow:0 2px 8px rgba(255,179,71,.4);}
+.stars-r{display:flex;gap:5px;margin-bottom:9px;}
+.star{font-size:1.4em;filter:drop-shadow(0 2px 4px rgba(255,215,0,.5));}
+.star.e{filter:grayscale(1) opacity(.3);}
+.pbar{background:rgba(179,136,255,.15);border-radius:20px;height:10px;overflow:hidden;margin-bottom:5px;}
+.pfill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--purple),var(--pink));width:70%;position:relative;}
+.pfill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:sh 2s infinite;}
+@keyframes sh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.plbl{display:flex;justify-content:space-between;font-size:.72em;color:#888;font-weight:700;}
+.celeb-btn{background:linear-gradient(135deg,#ff9800,#ff5722);border:none;border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;box-shadow:0 5px 18px rgba(255,152,0,.35);transition:transform .15s;}
+.celeb-btn:active{transform:scale(.97);}
+.cb-icon{width:46px;height:46px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;flex-shrink:0;border:2px solid rgba(255,255,255,.3);}
+.cb-info{flex:1;color:white;}
+.cb-title{font-size:.95em;font-weight:900;margin-bottom:2px;}
+.cb-sub{font-size:.76em;opacity:.85;font-weight:600;}
+.live-btn{background:linear-gradient(135deg,#7c4dff,#e040fb);border-radius:24px;padding:17px 19px;display:flex;align-items:center;gap:13px;border:none;cursor:pointer;width:100%;box-shadow:0 8px 28px rgba(124,77,255,.45);position:relative;overflow:hidden;animation:lglow 2.5s ease-in-out infinite;transition:transform .15s;}
+.live-btn:active{transform:scale(.97);}
+.live-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);}
+@keyframes lglow{0%,100%{box-shadow:0 8px 28px rgba(124,77,255,.45)}50%{box-shadow:0 8px 40px rgba(124,77,255,.7)}}
+.lmic{width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7em;flex-shrink:0;border:2px solid rgba(255,255,255,.3);position:relative;}
+.lring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,.3);animation:rp 1.8s ease-in-out infinite;}
+@keyframes rp{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.15);opacity:0}}
+.ldot{position:absolute;top:3px;right:3px;width:12px;height:12px;background:#69ff47;border-radius:50%;border:2px solid white;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.linfo{color:white;flex:1;}
+.ltitle{font-size:1.12em;font-weight:900;display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.lbadge{background:rgba(255,255,255,.25);font-size:.58em;padding:2px 8px;border-radius:6px;letter-spacing:1px;font-weight:800;}
+.lsub{font-size:.82em;opacity:.85;font-weight:600;}
+.story-sec{background:rgba(255,255,255,.9);border-radius:24px;overflow:hidden;box-shadow:0 6px 24px rgba(124,77,255,.1);border:2px solid rgba(255,179,71,.25);}
+.story-hdr{background:linear-gradient(135deg,#ff9a3c,#ff6b9d);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.shic{width:37px;height:37px;background:rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;border:1.5px solid rgba(255,255,255,.4);}
+.shtxt .sht{font-size:.94em;font-weight:900;color:white;}
+.shtxt .shs{font-size:.72em;opacity:.85;font-weight:600;color:white;}
+.story-scroll{display:flex;gap:10px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.story-scroll::-webkit-scrollbar{display:none}
+.scard{flex-shrink:0;width:130px;background:linear-gradient(160deg,#fff9f0,#fff0f9);border-radius:16px;padding:11px 9px;text-align:center;cursor:pointer;border:2px solid rgba(255,179,71,.2);transition:transform .15s;}
+.scard:active{transform:scale(.92);}
+.sthumb{width:100%;height:70px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.3em;margin-bottom:6px;position:relative;}
+.st1{background:linear-gradient(135deg,#ffe0b2,#ffccbc)}.st2{background:linear-gradient(135deg,#e1f5fe,#b3e5fc)}.st3{background:linear-gradient(135deg,#f3e5f5,#e1bee7)}.st4{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
+.pov{position:absolute;bottom:4px;right:4px;width:22px;height:22px;background:rgba(255,255,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55em;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+.snm{font-size:.72em;font-weight:800;color:var(--text);line-height:1.3;}
+.spts{display:inline-block;margin-top:4px;font-size:.62em;font-weight:800;background:linear-gradient(135deg,var(--yellow),var(--orange));color:#6d3d00;padding:2px 7px;border-radius:8px;}
+.science-sec{background:linear-gradient(135deg,rgba(255,152,0,.12),rgba(255,87,34,.1));border:2px solid rgba(255,152,0,.28);border-radius:24px;overflow:hidden;}
+.sci-hdr{background:linear-gradient(135deg,#ff9800,#ff5722);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.sciic{width:37px;height:37px;background:rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.scitxt .sct{font-size:.94em;font-weight:900;color:white;}
+.scitxt .scs{font-size:.72em;opacity:.85;font-weight:600;color:white;}
+.sci-scroll{display:flex;gap:10px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.sci-scroll::-webkit-scrollbar{display:none}
+.scicard{flex-shrink:0;width:130px;background:rgba(255,255,255,.85);border-radius:16px;padding:12px 9px;text-align:center;cursor:pointer;border:2px solid rgba(255,152,0,.2);transition:transform .15s;}
+.scicard:active{transform:scale(.93);}
+.scithumb{width:100%;height:70px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.3em;margin-bottom:6px;}
+.sci1{background:linear-gradient(135deg,#fff3e0,#ffe0b2)}.sci2{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}.sci3{background:linear-gradient(135deg,#fce4ec,#f8bbd0)}.sci4{background:linear-gradient(135deg,#e3f2fd,#bbdefb)}
+.scinm{font-size:.72em;font-weight:800;color:var(--text);line-height:1.3;}
+.scidif{display:inline-block;margin-top:4px;font-size:.6em;font-weight:800;padding:2px 7px;border-radius:8px;}
+.dif-easy{background:rgba(105,240,174,.2);color:#1b5e20;border:1px solid rgba(105,240,174,.4);}
+.dif-med{background:rgba(255,152,0,.15);color:#e65100;border:1px solid rgba(255,152,0,.3);}
+.rest-sec{background:linear-gradient(135deg,rgba(105,240,174,.12),rgba(77,208,225,.1));border:2px solid rgba(105,240,174,.28);border-radius:24px;overflow:hidden;}
+.rest-hdr{background:linear-gradient(135deg,#00bfa5,#00acc1);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.restic{width:37px;height:37px;background:rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.resttxt .rt{font-size:.94em;font-weight:900;color:white;}
+.resttxt .rs{font-size:.72em;opacity:.85;font-weight:600;color:white;}
+.rest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px;}
+.game-card{background:rgba(255,255,255,.85);border-radius:16px;padding:13px 8px;text-align:center;cursor:pointer;border:2px solid rgba(77,208,225,.2);transition:transform .15s;position:relative;}
+.game-card:active{transform:scale(.92);}
+.gic{font-size:2em;display:block;margin-bottom:5px;}
+.gnm{font-size:.7em;font-weight:800;color:var(--text);line-height:1.3;}
+.gtype{display:inline-block;margin-top:3px;font-size:.58em;font-weight:800;background:rgba(77,208,225,.15);color:#006064;border:1px solid rgba(77,208,225,.3);padding:2px 6px;border-radius:6px;}
+/* QUIZ OVERLAY */
+.quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.quiz-overlay.show{display:flex;}
+.quiz-box{background:white;border-radius:28px;padding:24px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.quiz-ic{font-size:3em;margin-bottom:10px;}
+.quiz-title{font-size:.75em;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+.quiz-q{font-size:1.1em;font-weight:900;color:var(--text);margin-bottom:18px;line-height:1.4;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.qopt{padding:12px 8px;border-radius:14px;border:2px solid rgba(124,77,255,.2);background:#f9f0ff;font-size:.88em;font-weight:800;color:var(--text);cursor:pointer;transition:all .15s;}
+.qopt:active{transform:scale(.96);}
+.qopt.correct{background:#e8f5e9;border-color:#4caf50;color:#1b5e20;}
+.qopt.wrong{background:#fce4ec;border-color:#ef5350;color:#b71c1c;}
+.quiz-pts{font-size:.78em;font-weight:800;color:var(--purple);margin-top:4px;}
+.quiz-close{margin-top:12px;background:linear-gradient(135deg,var(--purple),#e040fb);color:white;border:none;border-radius:14px;padding:11px 28px;font-size:.9em;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;}
+.weekly{background:linear-gradient(135deg,rgba(105,240,174,.12),rgba(77,208,225,.1));border:2px solid rgba(77,208,225,.28);border-radius:20px;padding:15px;display:flex;align-items:center;gap:11px;cursor:pointer;}
+.wic{width:48px;height:48px;flex-shrink:0;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4em;box-shadow:0 4px 12px rgba(105,240,174,.35);}
+.winfo{flex:1;}
+.wt{font-size:.9em;font-weight:900;color:var(--text);margin-bottom:2px;}
+.ws{font-size:.75em;color:#555;font-weight:600;}
+.war{font-size:1.2em;color:var(--teal);}
+.slabel{font-size:.9em;font-weight:900;color:var(--text);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.subj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.subj{background:rgba(255,255,255,.9);border-radius:17px;padding:13px 7px;text-align:center;cursor:pointer;border:2px solid rgba(179,136,255,.15);transition:transform .15s;box-shadow:0 3px 10px rgba(0,0,0,.05);position:relative;overflow:hidden;}
+.subj:active{transform:scale(.92);}
+.subj::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 17px 17px;}
+.sj1::after{background:linear-gradient(90deg,var(--purple),#e040fb)}.sj2::after{background:linear-gradient(90deg,#ff5252,var(--pink))}.sj3::after{background:linear-gradient(90deg,var(--teal),#26c6da)}.sj4::after{background:linear-gradient(90deg,var(--orange),#ff7043)}.sj5::after{background:linear-gradient(90deg,var(--green),var(--teal))}.sj6::after{background:linear-gradient(90deg,var(--pink),#f06292)}
+.sjic{font-size:2.1em;display:block;margin-bottom:5px;}
+.sjnm{font-size:.72em;font-weight:800;color:var(--text);line-height:1.2;}
+.sjst{font-size:.6em;display:block;margin-top:3px;}
+.ach-card{background:rgba(255,255,255,.9);border-radius:22px;padding:15px;border:2px solid rgba(255,215,0,.25);}
+.ach-t{font-size:.88em;font-weight:900;color:var(--text);margin-bottom:11px;}
+.ach-row{display:flex;gap:7px;}
+.ai{flex:1;background:linear-gradient(160deg,#f9f0ff,#f0f9ff);border-radius:13px;padding:11px 6px;text-align:center;border:2px solid rgba(179,136,255,.15);}
+.ai.un{border-color:rgba(255,215,0,.5);background:linear-gradient(160deg,#fffde7,#fff9c4);}
+.aic{font-size:1.7em;display:block;margin-bottom:4px;}
+.ain{font-size:.63em;font-weight:800;color:var(--text);line-height:1.2;}
+.bnav{background:rgba(255,255,255,.95);border-radius:26px;padding:10px 6px;display:flex;justify-content:space-around;box-shadow:0 4px 24px rgba(124,77,255,.15);backdrop-filter:blur(12px);position:sticky;bottom:12px;margin-top:auto;border:2px solid rgba(179,136,255,.15);}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 9px;border-radius:13px;cursor:pointer;flex:1;transition:background .15s;}
+.ni.on{background:linear-gradient(135deg,rgba(124,77,255,.1),rgba(224,64,251,.07));}
+.nic{font-size:1.25em;}
+.nil{font-size:.6em;font-weight:800;color:#aaa;}
+.ni.on .nil{color:var(--purple);}
+</style>
+</head>
+<body>
+<div class="confetti-wrap" id="confetti"></div>
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <div class="quiz-ic" id="qIc">🦁</div>
+    <div class="quiz-title" id="qTitle">JUEGO DE NÚMEROS</div>
+    <div class="quiz-q" id="qQ">¿Cuántas patas tiene un perro?</div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-pts" id="qPts"></div>
+    <button class="quiz-close" onclick="closeQuiz()">¡Seguir jugando! 🎮</button>
+  </div>
+</div>
+<div class="bg">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="sun"></div>
+  <div class="bf bf1">🦋</div><div class="bf bf2">🦋</div>
+  <div class="si" style="top:11%;left:7%;animation-duration:2s">✨</div>
+  <div class="si" style="top:28%;right:7%;animation-duration:2.5s;animation-delay:.4s">⭐</div>
+  <div class="si" style="top:52%;left:4%;animation-duration:3s;animation-delay:.8s">✨</div>
+</div>
+<div class="app">
+  <div class="header">
+    <div class="logo"><div class="logo-ic">🌟</div><div><div class="lname">Claude Kids</div><div class="llv">🌱 Jardín de Infantes</div></div></div>
+    <div class="uchip"><div class="uav">👧</div><span class="unm">¡Hola Sofía!</span></div>
+  </div>
+  <div class="day-strip">
+    <div class="daypill study" onclick="setMode('study',this)">📚 Aprender</div>
+    <div class="daypill rest" onclick="setMode('rest',this)">🎮 Descanso</div>
+    <div class="daypill science" onclick="setMode('science',this)">🔬 Científico</div>
+  </div>
+  <div class="claude-scene">
+    <div class="mood-label" id="moodLabel">😊 ¡Muy contento de verte!</div>
+    <div class="claude-char happy" id="claudeChar">
+      <svg width="108" height="108" viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="bg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#d1b3ff"/><stop offset="100%" stop-color="#7c4dff"/></radialGradient><radialGradient id="belly" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f3e5ff"/><stop offset="100%" stop-color="#e1bee7"/></radialGradient><radialGradient id="eye" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#f3f0ff"/></radialGradient></defs>
+        <ellipse cx="54" cy="62" rx="36" ry="37" fill="url(#bg)"/><ellipse cx="54" cy="68" rx="21" ry="19" fill="url(#belly)" opacity=".7"/>
+        <ellipse cx="27" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(-15,27,31)"/><ellipse cx="27" cy="31" rx="5" ry="7.5" fill="#e1bee7" transform="rotate(-15,27,31)"/>
+        <ellipse cx="81" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(15,81,31)"/><ellipse cx="81" cy="31" rx="5" ry="7.5" fill="#e1bee7" transform="rotate(15,81,31)"/>
+        <ellipse cx="39" cy="51" rx="13" ry="13.5" fill="url(#eye)"/><ellipse cx="69" cy="51" rx="13" ry="13.5" fill="url(#eye)"/>
+        <circle cx="40" cy="52" r="8" fill="#2d1a6e"/><circle cx="70" cy="52" r="8" fill="#2d1a6e"/>
+        <circle cx="43" cy="48" r="3" fill="white" opacity=".9"/><circle cx="73" cy="48" r="3" fill="white" opacity=".9"/>
+        <ellipse cx="54" cy="62" rx="5" ry="3.5" fill="#9c6dff"/>
+        <path d="M 42 70 Q 54 82 66 70" stroke="#6d28d9" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="32" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/><ellipse cx="76" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/>
+        <ellipse cx="18" cy="72" rx="8" ry="6" fill="#b388ff" transform="rotate(-20,18,72)"/><ellipse cx="90" cy="72" rx="8" ry="6" fill="#b388ff" transform="rotate(20,90,72)"/>
+      </svg>
+    </div>
+    <div class="bubble">
+      <div class="btxt" id="bubbleText">¡Hola Sofía! 👋 Soy <span>Claude</span>, ¡tu compañero mágico!</div>
+      <div class="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+    </div>
+    <div class="expr-row">
+      <button class="expr-btn on" onclick="setExpr('happy',this)">😊</button>
+      <button class="expr-btn" onclick="setExpr('excited',this)">🤩</button>
+      <button class="expr-btn" onclick="setExpr('thinking',this)">🤔</button>
+      <button class="expr-btn" onclick="setExpr('proud',this)">😎</button>
+    </div>
+  </div>
+  <div class="prog-card">
+    <div class="prog-top"><span class="ptitle">⭐ Mi progreso de hoy</span><span class="ppts">🏆 280 pts</span></div>
+    <div class="stars-r"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star e">⭐</span></div>
+    <div class="pbar"><div class="pfill"></div></div>
+    <div class="plbl"><span>¡Vas genial! 🌈</span><span>70%</span></div>
+  </div>
+  <button class="celeb-btn" onclick="celebrate()">
+    <div class="cb-icon">🎉</div>
+    <div class="cb-info"><div class="cb-title">¡Terminé una actividad!</div><div class="cb-sub">Tocá para celebrar tu logro 🎊</div></div>
+  </button>
+  <button class="live-btn">
+    <div class="lmic">🎤<div class="lring"></div><div class="ldot"></div></div>
+    <div class="linfo"><div class="ltitle">¡Hablar con Claude! <span class="lbadge">EN VIVO</span></div><div class="lsub">Preguntame lo que quieras 🎈</div></div>
+    <span style="color:rgba(255,255,255,.6);font-size:1.5em">▶</span>
+  </button>
+  <div class="story-sec">
+    <div class="story-hdr"><div class="shic">📖</div><div class="shtxt"><div class="sht">✨ Cuentos con Claude</div><div class="shs">Aprendé jugando con historias animadas</div></div></div>
+    <div class="story-scroll">
+      <div class="scard"><div class="sthumb st1">🦁<div class="pov">▶</div></div><div class="snm">El León que aprendió a contar</div><span class="spts">+40 pts</span></div>
+      <div class="scard"><div class="sthumb st2">🐠<div class="pov">▶</div></div><div class="snm">El Pez que conoció los colores</div><span class="spts">+35 pts</span></div>
+      <div class="scard"><div class="sthumb st3">🌈<div class="pov">▶</div></div><div class="snm">La Mariposa y las letras</div><span class="spts">+45 pts</span></div>
+      <div class="scard"><div class="sthumb st4">🐢<div class="pov">▶</div></div><div class="snm">La Tortuga que hizo amigos</div><span class="spts">+30 pts</span></div>
+    </div>
+  </div>
+  <div class="science-sec">
+    <div class="sci-hdr"><div class="sciic">🔬</div><div class="scitxt"><div class="sct">Claude Científico</div><div class="scs">Experimentos caseros ¡que funcionan de verdad!</div></div></div>
+    <div class="sci-scroll">
+      <div class="scicard"><div class="scithumb sci1">🌋</div><div class="scinm">Volcán de bicarbonato</div><span class="scidif dif-easy">Fácil</span></div>
+      <div class="scicard"><div class="scithumb sci2">🌱</div><div class="scinm">Planta que crece en agua</div><span class="scidif dif-easy">Fácil</span></div>
+      <div class="scicard"><div class="scithumb sci3">🎨</div><div class="scinm">Pintura con leche</div><span class="scidif dif-easy">Fácil</span></div>
+      <div class="scicard"><div class="scithumb sci4">🫧</div><div class="scinm">Burbujas que no explotan</div><span class="scidif dif-med">Medio</span></div>
+    </div>
+  </div>
+  <div class="rest-sec">
+    <div class="rest-hdr"><div class="restic">🎮</div><div class="resttxt"><div class="rt">Juegos de Descanso</div><div class="rs">¡Divertite y también aprendés sin darte cuenta!</div></div></div>
+    <div class="rest-grid">
+      <div class="game-card" onclick="openQuiz('numeros')"><span class="gic">🔢</span><span class="gnm">Adivina el número</span><span class="gtype">Números</span></div>
+      <div class="game-card" onclick="openQuiz('colores')"><span class="gic">🎨</span><span class="gnm">¿De qué color es?</span><span class="gtype">Colores</span></div>
+      <div class="game-card" onclick="openQuiz('animales')"><span class="gic">🐾</span><span class="gnm">Adivina el animal</span><span class="gtype">Naturaleza</span></div>
+      <div class="game-card" onclick="openQuiz('letras')"><span class="gic">🔤</span><span class="gnm">¿Con qué letra?</span><span class="gtype">Letras</span></div>
+      <div class="game-card" onclick="openQuiz('formas')"><span class="gic">🔷</span><span class="gnm">¿Qué figura es?</span><span class="gtype">Formas</span></div>
+      <div class="game-card" onclick="openQuiz('cuerpo')"><span class="gic">🧍</span><span class="gnm">Partes del cuerpo</span><span class="gtype">Ciencias</span></div>
+    </div>
+  </div>
+  <div class="weekly"><div class="wic">🗓️</div><div class="winfo"><div class="wt">Charla Semanal con Claude</div><div class="ws">¡Mirá todo lo que aprendiste esta semana! 🎉</div></div><div class="war">›</div></div>
+  <div>
+    <div class="slabel">🎯 ¿Qué querés aprender hoy?</div>
+    <div class="subj-grid">
+      <div class="subj sj1"><span class="sjic">🔢</span><span class="sjnm">Números</span><span class="sjst">⭐⭐⭐</span></div>
+      <div class="subj sj2"><span class="sjic">🔤</span><span class="sjnm">Letras</span><span class="sjst">⭐⭐⭐⭐</span></div>
+      <div class="subj sj3"><span class="sjic">🌍</span><span class="sjnm">El Mundo</span><span class="sjst">⭐⭐</span></div>
+      <div class="subj sj4"><span class="sjic">🎵</span><span class="sjnm">Música</span><span class="sjst">⭐⭐⭐⭐⭐</span></div>
+      <div class="subj sj5"><span class="sjic">🇬🇧</span><span class="sjnm">Inglés</span><span class="sjst">⭐⭐</span></div>
+      <div class="subj sj6"><span class="sjic">💛</span><span class="sjnm">Valores</span><span class="sjst">⭐⭐⭐</span></div>
+    </div>
+  </div>
+  <div class="ach-card">
+    <div class="ach-t">🏅 Mis medallas</div>
+    <div class="ach-row">
+      <div class="ai un"><span class="aic">🦁</span><div class="ain">León Valiente</div></div>
+      <div class="ai un"><span class="aic">📚</span><div class="ain">Lector Estrella</div></div>
+      <div class="ai"><span class="aic">🔒</span><div class="ain">Super Matemático</div></div>
+      <div class="ai"><span class="aic">🔒</span><div class="ain">Explorador</div></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni on"><span class="nic">🏠</span><span class="nil">Inicio</span></div>
+    <div class="ni"><span class="nic">📖</span><span class="nil">Cuentos</span></div>
+    <div class="ni"><span class="nic">🔬</span><span class="nil">Ciencia</span></div>
+    <div class="ni"><span class="nic">🎮</span><span class="nil">Juegos</span></div>
+    <div class="ni"><span class="nic">⭐</span><span class="nil">Logros</span></div>
+  </div>
+</div>
+<script>
+const expressions={happy:{anim:'happy',mood:'😊 ¡Muy contento de verte!',text:'¡Hola Sofía! 👋 Soy <span>Claude</span>, ¡tu compañero mágico!'},excited:{anim:'excited',mood:'🤩 ¡Emocionado por aprender!',text:'¡Wow Sofía! ¡Hoy vamos a aprender cosas <span>increíbles</span>! 🚀'},thinking:{anim:'thinking',mood:'🤔 Hmm, estoy pensando...',text:'Mmm... ¿qué pregunta <span>interesante</span> tenés para mí hoy? 💭'},proud:{anim:'proud',mood:'😎 ¡Qué orgulloso estoy de vos!',text:'¡Lo hiciste <span>genial</span> Sofía! ¡Soy muy feliz por vos! 🌟'}};
+function setExpr(type,btn){const e=expressions[type];document.getElementById('claudeChar').className='claude-char '+e.anim;document.getElementById('moodLabel').textContent=e.mood;document.getElementById('bubbleText').innerHTML=e.text;document.querySelectorAll('.expr-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function setMode(mode,btn){document.querySelectorAll('.daypill').forEach(b=>{b.style.opacity='0.5';b.style.transform='scale(0.95)';});btn.style.opacity='1';btn.style.transform='scale(1)';const moods={study:{expr:'happy',text:'¡Vamos a <span>aprender</span> algo increíble hoy! 📚'},rest:{expr:'excited',text:'¡Hoy es <span>día de juegos</span>! ¡Nos divertimos juntos! 🎮'},science:{expr:'thinking',text:'¡Hoy somos <span>científicos</span>! ¿Qué experimento hacemos? 🔬'}};const m=moods[mode];document.getElementById('claudeChar').className='claude-char '+expressions[m.expr].anim;document.getElementById('moodLabel').textContent=expressions[m.expr].mood;document.getElementById('bubbleText').innerHTML=m.text;}
+function celebrate(){const wrap=document.getElementById('confetti');wrap.innerHTML='';wrap.classList.add('show');const colors=['#ff5252','#ffe066','#69f0ae','#40c4ff','#ff80ab','#b388ff','#ffb347'];for(let i=0;i<80;i++){const cf=document.createElement('div');cf.className='cf';cf.style.cssText=`left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation:cffall ${1.5+Math.random()*2}s ${Math.random()*0.8}s linear forwards;`;wrap.appendChild(cf);}setExpr('excited',document.querySelectorAll('.expr-btn')[1]);setTimeout(()=>{wrap.classList.remove('show');setExpr('proud',document.querySelectorAll('.expr-btn')[3]);},3000);}
+
+// QUIZ SYSTEM - juegos que parecen juegos pero enseñan
+const quizzes={
+  numeros:{ic:'🔢',title:'JUEGO DE NÚMEROS',preguntas:[
+    {q:'¿Cuántas patas tiene un perro?',opts:['2','4','6','8'],ok:1},
+    {q:'¿Cuánto es 2 + 3?',opts:['4','5','6','7'],ok:1},
+    {q:'¿Qué número viene después del 7?',opts:['6','9','8','10'],ok:2},
+    {q:'¿Cuántos dedos tenés en una mano?',opts:['4','6','5','3'],ok:2}
+  ]},
+  colores:{ic:'🎨',title:'JUEGO DE COLORES',preguntas:[
+    {q:'¿De qué color es el cielo de día?',opts:['Verde','Rojo','Azul','Negro'],ok:2},
+    {q:'¿Qué color sale de mezclar azul y amarillo?',opts:['Naranja','Verde','Morado','Rosa'],ok:1},
+    {q:'¿De qué color son las hojas de los árboles?',opts:['Rojo','Azul','Verde','Blanco'],ok:2},
+    {q:'¿De qué color es el sol?',opts:['Azul','Amarillo','Verde','Gris'],ok:1}
+  ]},
+  animales:{ic:'🐾',title:'ADIVINA EL ANIMAL',preguntas:[
+    {q:'¿Qué animal hace "miau"?',opts:['Perro','Vaca','Gato','Pato'],ok:2},
+    {q:'¿Qué animal tiene trompa muy larga?',opts:['Jirafa','Elefante','León','Mono'],ok:1},
+    {q:'¿Qué animal pone huevos y vuela?',opts:['Perro','Pez','Pájaro','Gato'],ok:2},
+    {q:'¿Cuál es el animal más rápido del mundo?',opts:['León','Caballo','Guepardo','Tigre'],ok:2}
+  ]},
+  letras:{ic:'🔤',title:'JUEGO DE LETRAS',preguntas:[
+    {q:'"MANZANA" empieza con la letra...',opts:['P','M','A','N'],ok:1},
+    {q:'¿Cuántas vocales hay en "ELEFANTE"?',opts:['2','3','4','5'],ok:2},
+    {q:'"SOL" termina con la letra...',opts:['S','O','L','A'],ok:2},
+    {q:'¿Cuál de estas es una vocal?',opts:['B','C','E','F'],ok:2}
+  ]},
+  formas:{ic:'🔷',title:'JUEGO DE FIGURAS',preguntas:[
+    {q:'¿Cuántos lados tiene un triángulo?',opts:['2','4','3','5'],ok:2},
+    {q:'¿Qué figura es redonda?',opts:['Cuadrado','Triángulo','Círculo','Rectángulo'],ok:2},
+    {q:'¿Cuántos lados tiene un cuadrado?',opts:['3','4','5','6'],ok:1},
+    {q:'¿Qué figura tiene 6 lados?',opts:['Pentágono','Triángulo','Hexágono','Cuadrado'],ok:2}
+  ]},
+  cuerpo:{ic:'🧍',title:'MI CUERPO',preguntas:[
+    {q:'¿Con qué vemos?',opts:['Nariz','Oídos','Ojos','Boca'],ok:2},
+    {q:'¿Con qué escuchamos?',opts:['Ojos','Oídos','Nariz','Boca'],ok:1},
+    {q:'¿Cuántos ojos tenemos?',opts:['1','3','4','2'],ok:3},
+    {q:'¿Con qué respiramos?',opts:['Boca y nariz','Solo boca','Solo nariz','Oídos'],ok:0}
+  ]}
+};
+let currentQuiz=null,currentQ=0,pts=0;
+function openQuiz(tipo){
+  currentQuiz=quizzes[tipo];currentQ=0;pts=0;
+  document.getElementById('qIc').textContent=currentQuiz.ic;
+  document.getElementById('qTitle').textContent=currentQuiz.title;
+  showQuestion();
+  document.getElementById('quizOverlay').classList.add('show');
+}
+function showQuestion(){
+  if(currentQ>=currentQuiz.preguntas.length){document.getElementById('qQ').textContent='¡Terminaste! 🎉';document.getElementById('qOpts').innerHTML='';document.getElementById('qPts').textContent='Ganaste '+pts+' puntos ⭐';return;}
+  const p=currentQuiz.preguntas[currentQ];
+  document.getElementById('qQ').textContent=p.q;
+  document.getElementById('qPts').textContent='';
+  const opts=document.getElementById('qOpts');
+  opts.innerHTML='';
+  p.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.textContent=o;
+    b.onclick=()=>{
+      document.querySelectorAll('.qopt').forEach(x=>x.style.pointerEvents='none');
+      if(i===p.ok){b.classList.add('correct');pts+=20;document.getElementById('qPts').textContent='¡Correcto! +20 pts 🌟';}
+      else{b.classList.add('wrong');document.querySelectorAll('.qopt')[p.ok].classList.add('correct');document.getElementById('qPts').textContent='¡Casi! La respuesta era otra 💪';}
+      currentQ++;setTimeout(showQuestion,1400);
+    };
+    opts.appendChild(b);
+  });
+}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('show');}
+</script>
+</body>
+</html>
+Ñ
+
