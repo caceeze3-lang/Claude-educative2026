@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Teen — Secundario</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#07070c;--bg2:#0f0f1a;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);--text:#f0f0f6;--muted:rgba(240,240,246,.45);--purple:#8b5cf6;--violet:#6d28d9;--blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--pink:#ec4899;--orange:#f97316;--gold:#f5a623;--card:rgba(255,255,255,.04);--tech:#00d4ff;--tech2:#7928ca;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.glow{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;animation:gd 16s ease-in-out infinite alternate;}
+.g1{width:500px;height:500px;background:rgba(139,92,246,.07);top:-130px;right:-90px;}
+.g2{width:380px;height:380px;background:rgba(0,212,255,.04);bottom:-90px;left:-70px;animation-delay:-8s;}
+.g3{width:250px;height:250px;background:rgba(236,72,153,.04);top:50%;left:40%;animation-delay:-4s;}
+@keyframes gd{from{transform:translate(0,0)}to{transform:translate(22px,28px)}}
+.cfw{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
+.cf{position:absolute;animation:cff linear forwards;}
+@keyframes cff{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.onboard{position:fixed;inset:0;z-index:500;background:rgba(7,7,12,.98);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:32px 20px 40px;}
+.onboard.hidden{display:none;}
+.ob-step{width:100%;max-width:400px;display:none;}
+.ob-step.active{display:flex;flex-direction:column;align-items:center;}
+.step-dots{display:flex;gap:8px;margin-bottom:28px;}
+.sdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;}
+.sdot.on{background:var(--purple);width:22px;border-radius:4px;}
+.ob-logo{font-family:'Syne',sans-serif;font-size:1.5em;font-weight:800;color:white;text-align:center;margin-bottom:6px;}
+.ob-logo span{color:var(--purple);}
+.ob-sub{font-size:.85em;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6;}
+.ob-label{font-size:.78em;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;width:100%;}
+.ob-name{width:100%;background:rgba(255,255,255,.07);border:1.5px solid var(--border2);border-radius:14px;padding:14px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:1em;font-weight:700;outline:none;text-align:center;transition:border-color .2s;margin-bottom:6px;}
+.ob-name::placeholder{color:var(--muted);}
+.ob-name:focus{border-color:var(--purple);}
+.ob-age-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-bottom:6px;}
+.ob-age{padding:11px 6px;border-radius:11px;border:1.5px solid var(--border);background:var(--card);text-align:center;cursor:pointer;font-size:.82em;font-weight:800;color:var(--muted);transition:all .15s;}
+.ob-age.on{background:rgba(139,92,246,.2);border-color:var(--purple);color:white;}
+.ob-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+.ob-profile{padding:13px 10px;border-radius:13px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;}
+.ob-profile.on{border-color:var(--purple);background:rgba(139,92,246,.12);}
+.ob-pic{font-size:1.5em;margin-bottom:5px;}
+.ob-pname{font-size:.8em;font-weight:800;color:white;}
+.ob-pdesc{font-size:.67em;color:var(--muted);margin-top:2px;line-height:1.4;}
+.ob-btns{display:flex;gap:10px;width:100%;margin-top:22px;}
+.ob-back{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:14px;padding:14px;font-size:.9em;font-weight:800;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;}
+.ob-next{flex:2;background:linear-gradient(135deg,var(--purple),var(--violet));color:white;border:none;border-radius:14px;padding:14px;font-size:.95em;font-weight:900;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 6px 22px rgba(139,92,246,.4);transition:transform .15s;}
+.ob-next:active{transform:scale(.97);}
+.app{position:relative;z-index:1;max-width:440px;margin:0 auto;padding:13px;min-height:100vh;display:flex;flex-direction:column;gap:11px;padding-bottom:88px;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(30px);}
+.brand{display:flex;align-items:center;gap:9px;}
+.bic{width:38px;height:38px;background:linear-gradient(135deg,var(--purple),var(--violet));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1em;box-shadow:0 4px 14px rgba(139,92,246,.35);}
+.bnm{font-family:'Syne',sans-serif;font-size:1em;font-weight:800;color:white;}
+.bsub{font-size:.68em;color:var(--purple);font-weight:600;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.pts-badge{background:linear-gradient(135deg,var(--amber),#d97706);color:white;font-size:.75em;font-weight:800;padding:5px 11px;border-radius:20px;}
+.uchip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 11px 4px 4px;cursor:pointer;}
+.uav{width:28px;height:28px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85em;}
+.unm{font-size:.75em;font-weight:700;}
+.profile-badge{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;border:1px solid var(--border2);background:var(--card);}
+.pb-icon{font-size:1.4em;}
+.pb-info{flex:1;}
+.pb-name{font-size:.82em;font-weight:800;color:white;}
+.pb-desc{font-size:.7em;color:var(--muted);}
+.pb-edit{font-size:.72em;font-weight:700;color:var(--purple);cursor:pointer;}
+.day-strip{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;}
+.day-strip::-webkit-scrollbar{display:none}
+.daypill{flex-shrink:0;padding:7px 14px;border-radius:10px;font-size:.78em;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid var(--border);color:var(--muted);}
+.daypill.study{background:var(--purple);color:white;border-color:var(--purple);box-shadow:0 3px 14px rgba(139,92,246,.4);}
+.daypill.rest{background:var(--green);color:var(--bg);border-color:var(--green);}
+.daypill.science{background:var(--orange);color:white;border-color:var(--orange);}
+.daypill.tech{background:linear-gradient(135deg,#00d4ff,#7928ca);color:white;border-color:transparent;box-shadow:0 3px 14px rgba(0,212,255,.3);}
+.claude-card{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(59,130,246,.08));border:1px solid rgba(139,92,246,.2);border-radius:22px;padding:17px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;position:relative;overflow:hidden;}
+.claude-card::after{content:'CLAUDE TEEN';position:absolute;bottom:12px;right:14px;font-family:'Syne',sans-serif;font-size:.48em;font-weight:800;color:rgba(139,92,246,.13);letter-spacing:3px;}
+.cav{flex-shrink:0;}
+.cav.happy{animation:cfloat 4s ease-in-out infinite;}
+.cav.excited{animation:wiggle .5s ease-in-out infinite;}
+.cav.thinking{animation:sway 3s ease-in-out infinite;}
+.cav.proud{animation:fup 2s ease-in-out infinite;}
+@keyframes cfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes wiggle{0%,100%{transform:rotate(-7deg) scale(1.05)}50%{transform:rotate(7deg) scale(1.08)}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes fup{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.04)}}
+.cstatus{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:3px 9px;font-size:.66em;font-weight:700;color:var(--green);margin-bottom:6px;}
+.cdot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.cmood{font-size:.7em;font-weight:700;color:var(--purple);margin-bottom:5px;}
+.cmsg{font-size:.9em;font-weight:600;color:white;line-height:1.5;margin-bottom:10px;}
+.cmsg span{color:var(--cyan);font-weight:700;}
+.askbar{display:flex;gap:7px;}
+.askin{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:11px;padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82em;outline:none;transition:border-color .2s;}
+.askin::placeholder{color:var(--muted);}
+.askin:focus{border-color:var(--purple);}
+.askbtn{width:37px;height:37px;background:var(--purple);border:none;border-radius:11px;cursor:pointer;font-size:.9em;box-shadow:0 3px 12px rgba(139,92,246,.4);flex-shrink:0;transition:transform .15s;}
+.askbtn:active{transform:scale(.9);}
+.expr-row{display:flex;gap:5px;margin-top:10px;}
+.ebtn{flex:1;padding:6px 3px;border-radius:9px;border:1px solid var(--border);background:var(--card);font-size:.72em;cursor:pointer;transition:all .15s;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--muted);}
+.ebtn.on{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.35);color:white;}
+.ebtn:active{transform:scale(.93);}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px 9px;text-align:center;}
+.sn{font-family:'Syne',sans-serif;font-size:1.5em;font-weight:800;line-height:1;margin-bottom:3px;}
+.sl{font-size:.66em;color:var(--muted);font-weight:600;}
+.snp{color:var(--purple)}.sng{color:var(--green)}.sna{color:var(--amber)}
+.celeb-btn{background:linear-gradient(135deg,var(--purple),var(--pink));border:none;border-radius:16px;padding:14px 17px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;box-shadow:0 5px 20px rgba(139,92,246,.35);transition:transform .15s;}
+.celeb-btn:active{transform:scale(.97);}
+.cbic{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;border:1px solid rgba(255,255,255,.2);}
+.cbinfo{flex:1;color:white;}
+.cbt{font-size:.9em;font-weight:800;margin-bottom:2px;}
+.cbs{font-size:.72em;opacity:.8;}
+.live{background:linear-gradient(135deg,#3b0764,#5b21b6,#7c3aed);border:none;border-radius:17px;padding:15px 17px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;box-shadow:0 6px 26px rgba(109,40,217,.35);position:relative;overflow:hidden;transition:transform .15s;}
+.live:active{transform:scale(.98);}
+.live::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 60%);}
+.liwrap{width:46px;height:46px;flex-shrink:0;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;position:relative;}
+.liwrap::after{content:'';position:absolute;inset:-5px;border-radius:17px;border:1px solid rgba(139,92,246,.35);animation:lr 2s ease-in-out infinite;}
+@keyframes lr{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:0;transform:scale(1.1)}}
+.liinfo{flex:1;color:white;}
+.lirow{display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.lititle{font-size:.96em;font-weight:800;}
+.lipill{background:rgba(255,255,255,.2);font-size:.54em;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:1px;}
+.lisub{font-size:.76em;opacity:.7;}
+.tech-track{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(121,40,202,.1));border:1px solid rgba(0,212,255,.2);border-radius:24px;overflow:hidden;position:relative;}
+.tech-track::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:rgba(0,212,255,.04);border-radius:50%;}
+.tech-hdr{background:linear-gradient(135deg,#00b4d8,#7928ca);padding:16px 18px;display:flex;align-items:center;gap:12px;}
+.tech-hdr-ic{width:46px;height:46px;background:rgba(255,255,255,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4em;}
+.tech-hdr-info{flex:1;}
+.tech-title{font-family:'Syne',sans-serif;font-size:1em;font-weight:800;color:white;margin-bottom:2px;}
+.tech-sub{font-size:.72em;color:rgba(255,255,255,.8);}
+.tech-badge{background:rgba(255,255,255,.2);font-size:.6em;font-weight:900;padding:3px 9px;border-radius:20px;color:white;letter-spacing:1px;}
+.tech-body{padding:16px;}
+.salary-banner{background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(121,40,202,.08));border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.sb-ic{font-size:1.8em;}
+.sb-info{flex:1;}
+.sb-title{font-size:.82em;font-weight:800;color:white;margin-bottom:3px;}
+.sb-subs{display:flex;gap:8px;flex-wrap:wrap;}
+.sb-chip{font-size:.68em;font-weight:800;padding:3px 8px;border-radius:8px;background:rgba(0,212,255,.12);color:var(--tech);border:1px solid rgba(0,212,255,.2);}
+.career-scroll{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none;}
+.career-scroll::-webkit-scrollbar{display:none}
+.career-card{flex-shrink:0;width:175px;border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .15s;border:1px solid rgba(255,255,255,.08);}
+.career-card:active{transform:scale(.95);}
+.cc-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:2.8em;position:relative;}
+.cc1{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);}
+.cc2{background:linear-gradient(135deg,#0d0221,#190132,#20013a);}
+.cc3{background:linear-gradient(135deg,#0a0a0a,#1a0a0a,#2d0a0a);}
+.cc4{background:linear-gradient(135deg,#0a1628,#001529,#002040);}
+.cc-demand{position:absolute;top:6px;right:6px;font-size:.5em;font-weight:900;padding:2px 6px;border-radius:6px;background:rgba(16,185,129,.25);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.cc-body{padding:10px 9px;background:rgba(255,255,255,.05);}
+.cc-name{font-size:.78em;font-weight:800;color:white;margin-bottom:3px;}
+.cc-sal{font-size:.68em;color:var(--tech);font-weight:700;margin-bottom:5px;}
+.cc-skills{display:flex;flex-wrap:wrap;gap:3px;}
+.cc-skill{font-size:.58em;font-weight:800;padding:2px 5px;border-radius:5px;background:rgba(255,255,255,.07);color:var(--muted);}
+.roadmap{margin-bottom:14px;}
+.rm-label{font-size:.75em;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.rm-steps{display:flex;flex-direction:column;gap:8px;}
+.rm-row{display:flex;gap:10px;align-items:flex-start;}
+.rm-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:900;flex-shrink:0;margin-top:2px;}
+.rm-now{background:linear-gradient(135deg,var(--tech),#7928ca);color:white;box-shadow:0 3px 12px rgba(0,212,255,.35);}
+.rm-next{background:rgba(255,255,255,.07);color:var(--muted);border:1px solid var(--border);}
+.rm-done{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.25);}
+.rm-info{flex:1;}
+.rm-title{font-size:.82em;font-weight:800;color:white;margin-bottom:2px;}
+.rm-desc{font-size:.72em;color:var(--muted);line-height:1.5;}
+.rm-tag{display:inline-block;margin-top:3px;font-size:.62em;font-weight:800;padding:2px 7px;border-radius:6px;}
+.tag-now{background:rgba(0,212,255,.12);color:var(--tech);}
+.tag-next{background:rgba(139,92,246,.12);color:var(--purple);}
+.tag-done{background:rgba(16,185,129,.12);color:var(--green);}
+.projects-label{font-size:.75em;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.proj{border-radius:14px;padding:13px 11px;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:transform .15s;}
+.proj:active{transform:scale(.96);}
+.proj-ic{font-size:1.5em;margin-bottom:6px;}
+.proj-name{font-size:.78em;font-weight:800;color:white;margin-bottom:3px;}
+.proj-desc{font-size:.68em;color:var(--muted);line-height:1.4;}
+.proj-tag{display:inline-block;margin-top:5px;font-size:.6em;font-weight:800;padding:2px 7px;border-radius:6px;}
+.voc-card{background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(139,92,246,.08));border:1px solid rgba(245,166,35,.22);border-radius:22px;padding:17px;position:relative;overflow:hidden;}
+.voc-card::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:rgba(245,166,35,.05);border-radius:50%;}
+.voc-top{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
+.voc-ic{width:44px;height:44px;background:linear-gradient(135deg,rgba(245,166,35,.2),rgba(139,92,246,.15));border:1px solid rgba(245,166,35,.25);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.voc-head{font-family:'Syne',sans-serif;font-size:.95em;font-weight:800;color:white;margin-bottom:2px;}
+.voc-sub{font-size:.7em;color:rgba(245,166,35,.8);font-weight:600;}
+.vm-bars{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.vm-row{display:flex;align-items:center;gap:9px;}
+.vm-name{font-size:.73em;font-weight:700;color:rgba(255,255,255,.8);width:88px;flex-shrink:0;}
+.vm-bar{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:6px;overflow:hidden;}
+.vm-fill{height:100%;border-radius:6px;position:relative;}
+.vm-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:sh 2s infinite;}
+@keyframes sh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.vm-pct{font-size:.7em;font-weight:800;width:32px;text-align:right;}
+.vc-label{font-size:.7em;font-weight:700;color:var(--muted);margin-bottom:8px;}
+.vc-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.vc-chip{font-size:.73em;font-weight:800;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;}
+.vc-chip.hl{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3);color:var(--gold);}
+.voc-note{margin-top:12px;font-size:.72em;color:var(--muted);background:rgba(255,255,255,.04);border-radius:10px;padding:8px 12px;border-left:2px solid var(--purple);}
+.uni-sec{background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(249,115,22,.06));border:1px solid rgba(245,166,35,.2);border-radius:20px;overflow:hidden;}
+.uni-hdr{background:linear-gradient(135deg,#92400e,#b45309);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.uni-ic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.uni-t{font-size:.9em;font-weight:800;color:white;}
+.uni-s{font-size:.72em;opacity:.85;color:white;}
+.uni-body{padding:14px;}
+.uni-timeline{display:flex;flex-direction:column;gap:9px;}
+.ut-row{display:flex;gap:11px;align-items:flex-start;}
+.ut-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:900;flex-shrink:0;margin-top:2px;}
+.ut-active{background:var(--gold);color:var(--bg);}
+.ut-done{background:rgba(16,185,129,.2);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.ut-future{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border);}
+.ut-info{flex:1;}
+.ut-title{font-size:.8em;font-weight:800;color:white;margin-bottom:2px;}
+.ut-desc{font-size:.7em;color:var(--muted);line-height:1.5;}
+.ut-tag{display:inline-block;margin-top:3px;font-size:.6em;font-weight:800;padding:2px 6px;border-radius:5px;}
+.tnow{background:rgba(245,166,35,.15);color:var(--gold);}
+.tok{background:rgba(16,185,129,.15);color:var(--green);}
+.tnext{background:rgba(139,92,246,.15);color:var(--purple);}
+.vsec{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.vh{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--border);}
+.vt{font-size:.86em;font-weight:800;color:white;display:flex;align-items:center;gap:6px;}
+.va{font-size:.74em;font-weight:700;color:var(--cyan);cursor:pointer;}
+.vscroll{display:flex;gap:9px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.vscroll::-webkit-scrollbar{display:none}
+.vcard{flex-shrink:0;width:155px;cursor:pointer;transition:transform .15s;}
+.vcard:active{transform:scale(.95);}
+.vthumb{width:100%;height:86px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:2.2em;position:relative;margin-bottom:7px;border:1px solid var(--border);}
+.vt1{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(121,40,202,.15));}
+.vt2{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(245,158,11,.15));}
+.vt3{background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(16,185,129,.15));}
+.vt4{background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(139,92,246,.15));}
+.vbadge{position:absolute;top:5px;right:5px;font-size:.48em;font-weight:900;padding:2px 5px;border-radius:5px;}
+.vbn{background:var(--cyan);color:var(--bg);}.vbh{background:var(--red);color:white;}
+.vplay{position:absolute;bottom:5px;left:5px;width:22px;height:22px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.5em;}
+.vnm{font-size:.76em;font-weight:700;color:white;line-height:1.3;margin-bottom:2px;}
+.vmeta{font-size:.66em;color:var(--muted);}
+.sci-sec{background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(239,68,68,.08));border:1px solid rgba(249,115,22,.22);border-radius:20px;overflow:hidden;}
+.scih{background:linear-gradient(135deg,#f97316,#ef4444);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.sciic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.scit{font-size:.9em;font-weight:800;color:white;}
+.scis{font-size:.72em;opacity:.85;color:white;}
+.sciscroll{display:flex;gap:9px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.sciscroll::-webkit-scrollbar{display:none}
+.scicard{flex-shrink:0;width:140px;background:rgba(255,255,255,.05);border:1px solid rgba(249,115,22,.18);border-radius:15px;padding:12px 9px;text-align:center;cursor:pointer;transition:transform .15s;}
+.scicard:active{transform:scale(.93);}
+.scithumb{width:100%;height:68px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.2em;margin-bottom:7px;}
+.se1{background:linear-gradient(135deg,rgba(249,115,22,.2),rgba(239,68,68,.2));}
+.se2{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.2));}
+.se3{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(59,130,246,.2));}
+.se4{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(249,115,22,.2));}
+.scinm{font-size:.73em;font-weight:700;color:var(--text);line-height:1.3;}
+.scilv{display:inline-block;margin-top:4px;font-size:.6em;font-weight:800;padding:2px 6px;border-radius:6px;}
+.lv-e{background:rgba(16,185,129,.15);color:var(--green);}
+.lv-m{background:rgba(245,158,11,.15);color:var(--amber);}
+.lv-h{background:rgba(239,68,68,.15);color:var(--red);}
+.rest-sec{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(6,182,212,.08));border:1px solid rgba(59,130,246,.2);border-radius:20px;overflow:hidden;}
+.resth{background:linear-gradient(135deg,#1d4ed8,#0284c7);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.restic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.restt{font-size:.9em;font-weight:800;color:white;}
+.rests{font-size:.72em;opacity:.85;color:white;}
+.rest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px;}
+.gcard{background:rgba(255,255,255,.04);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:13px 7px;text-align:center;cursor:pointer;transition:transform .15s;}
+.gcard:active{transform:scale(.92);}
+.gic{font-size:1.9em;display:block;margin-bottom:5px;}
+.gnm{font-size:.7em;font-weight:700;color:var(--text);line-height:1.3;}
+.gtag{display:inline-block;margin-top:3px;font-size:.57em;font-weight:800;background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2);padding:2px 5px;border-radius:5px;}
+/* QUIZ OVERLAY */
+.quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.quiz-overlay.show{display:flex;}
+.quiz-box{background:#0f0f1a;border:1px solid rgba(139,92,246,.3);border-radius:28px;padding:28px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.7);}
+.quiz-ic{font-size:2.8em;margin-bottom:8px;}
+.quiz-cat{font-size:.65em;font-weight:900;color:var(--cyan);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;}
+.quiz-q{font-size:1em;font-weight:700;color:white;margin-bottom:20px;line-height:1.55;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.qopt{padding:13px 8px;border-radius:13px;border:1px solid rgba(139,92,246,.2);background:rgba(139,92,246,.07);font-size:.86em;font-weight:700;color:white;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.qopt:active{transform:scale(.96);}
+.qopt.correct{background:rgba(16,185,129,.18);border-color:var(--green);color:#6ee7b7;}
+.qopt.wrong{background:rgba(239,68,68,.18);border-color:var(--red);color:#fca5a5;}
+.quiz-pts{font-size:.78em;font-weight:800;color:var(--amber);min-height:22px;}
+.quiz-close{margin-top:14px;background:linear-gradient(135deg,var(--purple),var(--violet));color:white;border:none;border-radius:13px;padding:12px 32px;font-size:.9em;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 18px rgba(139,92,246,.4);}
+.weekly{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.08));border:1px solid rgba(16,185,129,.22);border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s;}
+.weekly:active{transform:scale(.97);}
+.wic{width:44px;height:44px;flex-shrink:0;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.wi{flex:1;}
+.wt{font-size:.87em;font-weight:800;color:white;margin-bottom:2px;}
+.ws{font-size:.72em;color:rgba(255,255,255,.5);}
+.war{color:var(--green);font-size:1.2em;}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.sht{font-size:.84em;font-weight:800;color:rgba(255,255,255,.8);}
+.shl{font-size:.74em;font-weight:700;color:var(--purple);cursor:pointer;}
+.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.subj{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:14px 13px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.subj:active{transform:scale(.97);}
+.subj::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:15px 15px 0 0;}
+.sp::before{background:linear-gradient(90deg,var(--purple),var(--blue));}
+.sa::before{background:linear-gradient(90deg,var(--amber),var(--orange));}
+.sc2::before{background:linear-gradient(90deg,var(--cyan),var(--green));}
+.spk::before{background:linear-gradient(90deg,var(--pink),var(--red));}
+.sg::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
+.sr::before{background:linear-gradient(90deg,var(--red),var(--orange));}
+.stop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.sic{font-size:1.5em;}
+.spc{font-size:.72em;font-weight:800;}
+.sp-p{color:var(--purple)}.sp-a{color:var(--amber)}.sp-c{color:var(--cyan)}.sp-pk{color:var(--pink)}.sp-g{color:var(--green)}.sp-r{color:var(--red)}
+.snm2{font-size:.84em;font-weight:700;color:white;margin-bottom:7px;}
+.sbar{height:3px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:5px;}
+.sfill{height:100%;border-radius:3px;}
+.chip{font-size:.6em;font-weight:800;padding:2px 6px;border-radius:5px;}
+.ch-ok{background:rgba(16,185,129,.15);color:var(--green);}
+.ch-r{background:rgba(239,68,68,.15);color:var(--red);}
+.ch-hot{background:rgba(0,212,255,.12);color:var(--tech);}
+.med-card{background:linear-gradient(135deg,rgba(239,68,68,.09),rgba(245,158,11,.06));border:1px solid rgba(239,68,68,.18);border-radius:18px;padding:14px;}
+.med-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.medic{width:42px;height:42px;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.medh{font-size:.88em;font-weight:800;color:white;}
+.meds{font-size:.7em;color:rgba(239,68,68,.75);font-weight:600;}
+.med-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.mchip{font-size:.72em;font-weight:700;padding:5px 10px;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+.life{background:linear-gradient(135deg,rgba(236,72,153,.09),rgba(139,92,246,.07));border:1px solid rgba(236,72,153,.16);border-radius:17px;padding:14px;}
+.lifeh{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.lifeic{width:42px;height:42px;background:rgba(236,72,153,.13);border:1px solid rgba(236,72,153,.18);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.lifehead{font-size:.88em;font-weight:800;color:white;}
+.lifesub{font-size:.7em;color:rgba(236,72,153,.75);font-weight:600;}
+.lifechips{display:flex;flex-wrap:wrap;gap:6px;}
+.lchip{font-size:.72em;font-weight:700;padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+.streak{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.06));border:1px solid rgba(245,158,11,.18);border-radius:17px;padding:13px;display:flex;align-items:center;gap:12px;}
+.sf{font-size:2em;animation:flame .9s ease-in-out infinite alternate;}
+@keyframes flame{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.1) rotate(4deg)}}
+.si2{flex:1;}
+.snum{font-family:'Syne',sans-serif;font-size:1.7em;font-weight:800;color:var(--amber);line-height:1;}
+.slbl{font-size:.73em;color:var(--muted);font-weight:600;}
+.sdrow{display:flex;gap:5px;}
+.dd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.66em;font-weight:800;}
+.dd.done{background:var(--amber);color:var(--bg);}
+.dd.today{background:var(--purple);color:white;animation:tp 1s infinite;}
+@keyframes tp{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.4)}50%{box-shadow:0 0 0 5px rgba(139,92,246,0)}}
+.dd.pen{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,12,.93);border-top:1px solid var(--border);backdrop-filter:blur(30px);padding:10px 18px 18px;display:flex;justify-content:space-around;z-index:100;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px;border-radius:10px;cursor:pointer;flex:1;transition:background .15s;}
+.ni.on{background:rgba(139,92,246,.12);}
+.nic{font-size:1.15em;}
+.nil{font-size:.58em;font-weight:700;color:var(--muted);}
+.ni.on .nil{color:var(--purple);}
+</style>
+</head>
+<body>
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <div class="quiz-ic" id="qIc">🧠</div>
+    <div class="quiz-cat" id="qCat">FILOSOFÍA</div>
+    <div class="quiz-q" id="qQ">Pregunta...</div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-pts" id="qPts"></div>
+    <button class="quiz-close" onclick="closeQuiz()">Seguir jugando 🎮</button>
+  </div>
+</div>
+<div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+<div class="cfw" id="cfw"></div>
+<div class="onboard" id="onboard">
+  <div class="ob-step active" id="step1">
+    <div class="step-dots"><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+    <div class="ob-logo">Claude <span>Teen</span></div>
+    <div class="ob-sub">Tu compañero desde el secundario hasta la universidad y el trabajo 🚀</div>
+    <div class="ob-label">¿Cómo te llamás?</div>
+    <input class="ob-name" id="ob-name" placeholder="Tu nombre..." maxlength="20"/>
+    <div class="ob-btns"><button class="ob-next" style="flex:1" onclick="goStep(2)">Siguiente →</button></div>
+  </div>
+  <div class="ob-step" id="step2">
+    <div class="step-dots"><div class="sdot"></div><div class="sdot on"></div><div class="sdot"></div></div>
+    <div class="ob-logo" style="margin-bottom:6px;">¿Qué año cursás?</div>
+    <div class="ob-sub">Claude adapta todo según tu año — incluyendo la orientación tech a partir de 3° 🎯</div>
+    <div class="ob-age-grid">
+      <div class="ob-age" onclick="selAge(this,'1')">1° año</div>
+      <div class="ob-age" onclick="selAge(this,'2')">2° año</div>
+      <div class="ob-age on" onclick="selAge(this,'3')">3° año</div>
+      <div class="ob-age" onclick="selAge(this,'4')">4° año</div>
+      <div class="ob-age" onclick="selAge(this,'5')">5° año</div>
+      <div class="ob-age" onclick="selAge(this,'6')">6° año</div>
+    </div>
+    <div class="ob-btns"><button class="ob-back" onclick="goStep(1)">← Atrás</button><button class="ob-next" onclick="goStep(3)">Siguiente →</button></div>
+  </div>
+  <div class="ob-step" id="step3">
+    <div class="step-dots"><div class="sdot"></div><div class="sdot"></div><div class="sdot on"></div></div>
+    <div class="ob-logo" style="margin-bottom:6px;">Perfil de aprendizaje</div>
+    <div class="ob-sub">Claude se adapta completamente a vos desde el primer día 💜</div>
+    <div class="ob-profile-grid">
+      <div class="ob-profile on" onclick="selProfile(this,'neuro','🧠','Estándar')"><div class="ob-pic">🧠</div><div class="ob-pname">Estándar</div><div class="ob-pdesc">Experiencia completa</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'tea1','🧩','TEA Nivel 1')"><div class="ob-pic">🧩</div><div class="ob-pname">TEA Nivel 1</div><div class="ob-pdesc">Lenguaje preciso</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'tdah','⚡','TDAH')"><div class="ob-pic">⚡</div><div class="ob-pname">TDAH</div><div class="ob-pdesc">Sesiones dinámicas</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'dis','📖','Dislexia')"><div class="ob-pic">📖</div><div class="ob-pname">Dislexia</div><div class="ob-pdesc">Más audio</div></div>
+    </div>
+    <div class="ob-btns"><button class="ob-back" onclick="goStep(2)">← Atrás</button><button class="ob-next" onclick="startApp()">¡Empezar! →</button></div>
+  </div>
+</div>
+<div class="app" id="mainApp" style="display:none;">
+  <div class="hdr">
+    <div class="brand"><div class="bic">🎓</div><div><div class="bnm">Claude Teen</div><div class="bsub" id="hdr-sub">Secundario</div></div></div>
+    <div class="hdr-r">
+      <div class="pts-badge">⭐ <span id="pts-val">3.240</span> pts</div>
+      <div class="uchip" onclick="document.getElementById('onboard').classList.remove('hidden');document.getElementById('mainApp').style.display='none';">
+        <div class="uav" id="user-av">🧠</div><span class="unm" id="user-name">Lucas</span>
+      </div>
+    </div>
+  </div>
+  <div class="profile-badge">
+    <div class="pb-icon" id="pb-icon">🧠</div>
+    <div class="pb-info"><div class="pb-name" id="pb-name">Perfil: Estándar · 3° año</div><div class="pb-desc">Claude adaptado a tu forma de aprender</div></div>
+    <div class="pb-edit" onclick="document.getElementById('onboard').classList.remove('hidden');document.getElementById('mainApp').style.display='none';">Editar →</div>
+  </div>
+  <div class="day-strip">
+    <div class="daypill study" onclick="setMode('study',this)">📚 Estudiar</div>
+    <div class="daypill rest" onclick="setMode('rest',this)">🎮 Descanso</div>
+    <div class="daypill science" onclick="setMode('science',this)">⚗️ Científico</div>
+    <div class="daypill tech" onclick="setMode('tech',this)">💻 Tech</div>
+    <div class="daypill" style="color:var(--muted)" onclick="setMode('uni',this)">🎓 Mi Futuro</div>
+  </div>
+  <div class="claude-card">
+    <div class="cav happy" id="claudeChar">
+      <svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient><radialGradient id="eg3" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#ddd6fe"/></radialGradient></defs>
+        <rect width="72" height="72" rx="21" fill="url(#bg3)"/>
+        <ellipse cx="23" cy="31" rx="10" ry="11" fill="url(#eg3)"/><ellipse cx="49" cy="31" rx="10" ry="11" fill="url(#eg3)"/>
+        <circle cx="24" cy="32" r="6.5" fill="#1e1b4b"/><circle cx="50" cy="32" r="6.5" fill="#1e1b4b"/>
+        <circle cx="27" cy="28" r="2" fill="white" opacity=".9"/><circle cx="53" cy="28" r="2" fill="white" opacity=".9"/>
+        <path d="M 23 48 Q 36 57 49 48" stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="36" y1="6" x2="36" y2="14" stroke="#7c3aed" stroke-width="1.5"/><circle cx="36" cy="4" r="3.5" fill="#8b5cf6"/>
+        <ellipse cx="12" cy="42" rx="5" ry="3.5" fill="#ec4899" opacity=".28"/><ellipse cx="60" cy="42" rx="5" ry="3.5" fill="#ec4899" opacity=".28"/>
+        <circle cx="60" cy="12" r="9" fill="#10b981"/><text x="60" y="16" text-anchor="middle" font-size="8" fill="white" font-weight="bold">ON</text>
+      </svg>
+    </div>
+    <div>
+      <div class="cstatus"><div class="cdot"></div>En línea</div>
+      <div class="cmood" id="moodLabel">🎯 Listo para arrancar</div>
+      <div class="cmsg" id="bubbleText">¡Hola! Tenés <span>Historia</span> pendiente y nuevo contenido en <span>Tech Track</span>. ¿Arrancamos?</div>
+      <div class="askbar"><input class="askin" placeholder="Escribí tu pregunta..."/><button class="askbtn">➤</button></div>
+      <div class="expr-row">
+        <button class="ebtn on" onclick="setExpr('happy',this)">🎯 Listo</button>
+        <button class="ebtn" onclick="setExpr('excited',this)">🔥 ¡Vamos!</button>
+        <button class="ebtn" onclick="setExpr('thinking',this)">🤔 Pensando</button>
+        <button class="ebtn" onclick="setExpr('proud',this)">💪 Orgulloso</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="sc"><div class="sn snp">87%</div><div class="sl">Promedio</div></div>
+    <div class="sc"><div class="sn sng">14🔥</div><div class="sl">Días seguidos</div></div>
+    <div class="sc"><div class="sn sna">3.2k</div><div class="sl">Puntos</div></div>
+  </div>
+  <button class="celeb-btn" onclick="celebrate()">
+    <div class="cbic">🏆</div>
+    <div class="cbinfo"><div class="cbt">Completé un objetivo</div><div class="cbs">Claude te reconoce el logro 🎊</div></div>
+  </button>
+  <button class="live">
+    <div class="liwrap">🎤</div>
+    <div class="liinfo"><div class="lirow"><span class="lititle">Hablar con Claude</span><span class="lipill">EN VIVO</span></div><div class="lisub">Preguntá, debatí, aprendé en tiempo real</div></div>
+    <span style="color:rgba(255,255,255,.4);font-size:1.2em">›</span>
+  </button>
+  <div class="tech-track" id="tech-section">
+    <div class="tech-hdr">
+      <div class="tech-hdr-ic">💻</div>
+      <div class="tech-hdr-info"><div class="tech-title">Tech Track — Tu futuro digital</div><div class="tech-sub">Desarrollo · IA · Ciberseguridad · UX/UI · Salidas laborales reales</div></div>
+      <span class="tech-badge">DISPONIBLE</span>
+    </div>
+    <div class="tech-body">
+      <div class="salary-banner">
+        <div class="sb-ic">💰</div>
+        <div class="sb-info">
+          <div class="sb-title">Carreras tech — Sueldos reales en Argentina y el mundo</div>
+          <div class="sb-subs"><span class="sb-chip">Dev Jr: $800–1.5k USD/mes</span><span class="sb-chip">Dev Sr: $3–7k USD/mes</span><span class="sb-chip">100% remoto</span><span class="sb-chip">Sin título obligatorio</span></div>
+        </div>
+      </div>
+      <div class="career-scroll">
+        <div class="career-card"><div class="cc-thumb cc1">💻<span class="cc-demand">Alta demanda</span></div><div class="cc-body"><div class="cc-name">Desarrollo de Software</div><div class="cc-sal">$800–7.000 USD/mes</div><div class="cc-skills"><span class="cc-skill">Python</span><span class="cc-skill">JavaScript</span><span class="cc-skill">React</span><span class="cc-skill">Git</span></div></div></div>
+        <div class="career-card"><div class="cc-thumb cc2">🤖<span class="cc-demand">Explosivo</span></div><div class="cc-body"><div class="cc-name">IA / Data Science</div><div class="cc-sal">$1.200–10.000 USD/mes</div><div class="cc-skills"><span class="cc-skill">Python</span><span class="cc-skill">ML</span><span class="cc-skill">SQL</span><span class="cc-skill">Stats</span></div></div></div>
+        <div class="career-card"><div class="cc-thumb cc3">🔐<span class="cc-demand">Crítico</span></div><div class="cc-body"><div class="cc-name">Ciberseguridad</div><div class="cc-sal">$1.500–12.000 USD/mes</div><div class="cc-skills"><span class="cc-skill">Redes</span><span class="cc-skill">Ethical Hack</span><span class="cc-skill">Linux</span></div></div></div>
+        <div class="career-card"><div class="cc-thumb cc4">🎨<span class="cc-demand">En crecimiento</span></div><div class="cc-body"><div class="cc-name">Diseño UX/UI</div><div class="cc-sal">$700–5.000 USD/mes</div><div class="cc-skills"><span class="cc-skill">Figma</span><span class="cc-skill">Prototipado</span><span class="cc-skill">Research</span></div></div></div>
+      </div>
+      <div class="roadmap">
+        <div class="rm-label">📍 Tu roadmap desde hoy</div>
+        <div class="rm-steps">
+          <div class="rm-row"><div class="rm-dot rm-done">✓</div><div class="rm-info"><div class="rm-title">Pensamiento lógico — Matemática</div><div class="rm-desc">La base de todo en tech. Tu 91% en Matemática es una ventaja real.</div><span class="rm-tag tag-done">✓ Base lista</span></div></div>
+          <div class="rm-row"><div class="rm-dot rm-now">▶</div><div class="rm-info"><div class="rm-title">Primeros pasos en programación ← Ahora</div><div class="rm-desc">Python básico con Claude. 1 hora por día. En 3 meses tu primer proyecto.</div><span class="rm-tag tag-now">💻 Arrancar hoy</span></div></div>
+          <div class="rm-row"><div class="rm-dot rm-next">4°</div><div class="rm-info"><div class="rm-title">Primer proyecto real</div><div class="rm-desc">Una app, un bot, un análisis de datos. Algo que podés mostrar en una entrevista.</div><span class="rm-tag tag-next">Próximo →</span></div></div>
+          <div class="rm-row"><div class="rm-dot rm-next">5°</div><div class="rm-info"><div class="rm-title">Portfolio + primeras postulaciones</div><div class="rm-desc">GitHub con proyectos reales. Podés conseguir tu primer trabajo mientras terminás el colegio.</div><span class="rm-tag tag-next">Se viene →</span></div></div>
+          <div class="rm-row"><div class="rm-dot rm-next">🚀</div><div class="rm-info"><div class="rm-title">Egreso con trabajo o carrera elegida</div><div class="rm-desc">Tech no espera. Con 18 años ya podés estar ganando en dólares de forma remota.</div><span class="rm-tag tag-next">La meta 🏆</span></div></div>
+        </div>
+      </div>
+      <div class="projects-label">🛠️ Proyectos que podés empezar hoy</div>
+      <div class="projects-grid">
+        <div class="proj" style="background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.18);"><div class="proj-ic">🤖</div><div class="proj-name">Tu primer chatbot</div><div class="proj-desc">Con Python + Claude API. Claude te guía línea por línea.</div><span class="proj-tag" style="background:rgba(0,212,255,.12);color:var(--tech);">Python · Fácil</span></div>
+        <div class="proj" style="background:rgba(121,40,202,.08);border-color:rgba(121,40,202,.2);"><div class="proj-ic">📊</div><div class="proj-name">Análisis de datos</div><div class="proj-desc">Tomás datos reales y encontrás patrones con IA.</div><span class="proj-tag" style="background:rgba(121,40,202,.12);color:#c084fc;">Data · Medio</span></div>
+        <div class="proj" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18);"><div class="proj-ic">🔐</div><div class="proj-name">Hackea tu router</div><div class="proj-desc">Ethical hacking básico. Detectar vulnerabilidades propias.</div><span class="proj-tag" style="background:rgba(239,68,68,.12);color:#f87171;">Cyber · Medio</span></div>
+        <div class="proj" style="background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.18);"><div class="proj-ic">📱</div><div class="proj-name">Diseñá una app</div><div class="proj-desc">Prototipo real en Figma. UX research incluido.</div><span class="proj-tag" style="background:rgba(245,158,11,.12);color:var(--amber);">Diseño · Fácil</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="voc-card">
+    <div class="voc-top"><div class="voc-ic">🔭</div><div><div class="voc-head">Tu perfil vocacional — Claude te conoce</div><div class="voc-sub">Construido con todo lo que estudiaste y preguntaste</div></div></div>
+    <div class="vm-bars">
+      <div class="vm-row"><div class="vm-name">🔬 Ciencias</div><div class="vm-bar"><div class="vm-fill" style="width:88%;background:linear-gradient(90deg,var(--cyan),var(--green))"></div></div><div class="vm-pct" style="color:var(--cyan)">88%</div></div>
+      <div class="vm-row"><div class="vm-name">💻 Tecnología</div><div class="vm-bar"><div class="vm-fill" style="width:91%;background:linear-gradient(90deg,var(--tech),#7928ca)"></div></div><div class="vm-pct" style="color:var(--tech)">91%</div></div>
+      <div class="vm-row"><div class="vm-name">📐 Matemática</div><div class="vm-bar"><div class="vm-fill" style="width:82%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div></div><div class="vm-pct" style="color:var(--blue)">82%</div></div>
+      <div class="vm-row"><div class="vm-name">🏛️ Historia</div><div class="vm-bar"><div class="vm-fill" style="width:45%;background:linear-gradient(90deg,var(--amber),var(--orange))"></div></div><div class="vm-pct" style="color:var(--amber)">45%</div></div>
+      <div class="vm-row"><div class="vm-name">📝 Lengua</div><div class="vm-bar"><div class="vm-fill" style="width:58%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div><div class="vm-pct" style="color:var(--pink)">58%</div></div>
+    </div>
+    <div class="vc-label">🎯 Carreras que Claude te recomienda según tu perfil real</div>
+    <div class="vc-chips"><span class="vc-chip hl">🤖 Ingeniería en IA</span><span class="vc-chip hl">💻 Desarrollo de Software</span><span class="vc-chip hl">🔐 Ciberseguridad</span><span class="vc-chip">🧬 Biotecnología</span><span class="vc-chip">📊 Data Science</span><span class="vc-chip">🎨 UX/UI Design</span></div>
+    <div class="voc-note" id="voc-note">📊 Estás en <strong>3° año</strong> — Claude lleva 2 años construyendo tu perfil.</div>
+  </div>
+  <div class="uni-sec">
+    <div class="uni-hdr"><div class="uni-ic">🏛️</div><div><div class="uni-t">Tu camino a la universidad o el trabajo</div><div class="uni-s">Claude te acompaña desde hoy hasta que estés adentro</div></div></div>
+    <div class="uni-body">
+      <div class="uni-timeline">
+        <div class="ut-row"><div class="ut-dot ut-done">✓</div><div class="ut-info"><div class="ut-title">1° y 2° año — Exploración</div><div class="ut-desc">Base académica + primeros intereses detectados.</div><span class="ut-tag tok">✓ Listo</span></div></div>
+        <div class="ut-row"><div class="ut-dot ut-active">3°</div><div class="ut-info"><div class="ut-title">3° año — Tech Track activo ← Ahora</div><div class="ut-desc">Aprendés programación básica. Claude detecta si tech es para vos.</div><span class="ut-tag tnow">📍 Hoy</span></div></div>
+        <div class="ut-row"><div class="ut-dot ut-future">4°</div><div class="ut-info"><div class="ut-title">4° año — Primer proyecto real</div><div class="ut-desc">Portfolio inicial, especialización en el área que más te gusta.</div><span class="ut-tag tnext">→ Próximo</span></div></div>
+        <div class="ut-row"><div class="ut-dot ut-future">5°</div><div class="ut-info"><div class="ut-title">5° año — Trabajo o universidad</div><div class="ut-desc">Primera postulación laboral o preparación de ingreso universitario.</div><span class="ut-tag tnext">→ Se viene</span></div></div>
+        <div class="ut-row"><div class="ut-dot ut-future">🚀</div><div class="ut-info"><div class="ut-title">Egreso — 6 años de historial verificable</div><div class="ut-desc">Portfolio + certificaciones Claude que abrís en cualquier empresa del mundo.</div><span class="ut-tag tnext">La meta 🏆</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="weekly"><div class="wic">📊</div><div class="wi"><div class="wt">Charla Semanal con Claude</div><div class="ws">Todo lo que hiciste · Lo que sigue · Cómo mejorar</div></div><div class="war">›</div></div>
+  <div class="vsec">
+    <div class="vh"><div class="vt">🔥 Videos que no podés perderte</div><div class="va">Ver todos →</div></div>
+    <div class="vscroll">
+      <div class="vcard"><div class="vthumb vt1">💻<span class="vbadge vbn">NUEVO</span><div class="vplay">▶</div></div><div class="vnm">Cómo aprender a programar en 2025</div><div class="vmeta">⏱ 9min · +130 pts</div></div>
+      <div class="vcard"><div class="vthumb vt2">🤖<span class="vbadge vbh">🔥</span><div class="vplay">▶</div></div><div class="vnm">IA — Lo que ningún colegio te enseña</div><div class="vmeta">⏱ 11min · +150 pts</div></div>
+      <div class="vcard"><div class="vthumb vt3">🚀<div class="vplay">▶</div></div><div class="vnm">Trabajar en tech a los 18 — Es posible</div><div class="vmeta">⏱ 8min · +120 pts</div></div>
+      <div class="vcard"><div class="vthumb vt4">🔐<span class="vbadge vbn">NUEVO</span><div class="vplay">▶</div></div><div class="vnm">Ciberseguridad — La carrera del futuro</div><div class="vmeta">⏱ 10min · +140 pts</div></div>
+    </div>
+  </div>
+  <div class="sci-sec">
+    <div class="scih"><div class="sciic">⚗️</div><div><div class="scit">Claude Científico</div><div class="scis">Experimentos caseros — nivel secundario</div></div></div>
+    <div class="sciscroll">
+      <div class="scicard"><div class="scithumb se1">⚡</div><div class="scinm">Electrostática con globo</div><span class="scilv lv-e">Fácil</span></div>
+      <div class="scicard"><div class="scithumb se2">🧪</div><div class="scinm">Indicador pH casero</div><span class="scilv lv-m">Medio</span></div>
+      <div class="scicard"><div class="scithumb se3">🔭</div><div class="scinm">Telescopio con lentes</div><span class="scilv lv-m">Medio</span></div>
+      <div class="scicard"><div class="scithumb se4">⚗️</div><div class="scinm">Destilación de agua</div><span class="scilv lv-h">Avanzado</span></div>
+    </div>
+  </div>
+  <div class="rest-sec">
+    <div class="resth"><div class="restic">🎮</div><div><div class="restt">Juegos de Descanso</div><div class="rests">Divertite — y también aprendés sin darte cuenta</div></div></div>
+    <div class="rest-grid">
+      <div class="gcard" onclick="openQuiz('filosofia')"><span class="gic">🧠</span><span class="gnm">Dilemas filosóficos</span><span class="gtag">Filosofía</span></div>
+      <div class="gcard" onclick="openQuiz('fisica')"><span class="gic">⚡</span><span class="gnm">Física extrema</span><span class="gtag">Física</span></div>
+      <div class="gcard" onclick="openQuiz('historia')"><span class="gic">🌍</span><span class="gnm">Historia mundial</span><span class="gtag">Historia</span></div>
+      <div class="gcard" onclick="openQuiz('tech')"><span class="gic">💻</span><span class="gnm">Tech & Programación</span><span class="gtag">Tech</span></div>
+      <div class="gcard" onclick="openQuiz('mate')"><span class="gic">📐</span><span class="gnm">Desafío mental</span><span class="gtag">Matemática</span></div>
+      <div class="gcard" onclick="openQuiz('ingles')"><span class="gic">🇬🇧</span><span class="gnm">Advanced English</span><span class="gtag">Inglés</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="sh"><div class="sht">Materias</div><div class="shl">Ver todas →</div></div>
+    <div class="subj-grid">
+      <div class="subj sp"><div class="stop"><span class="sic">📐</span><span class="spc sp-p">91%</span></div><div class="snm2">Matemática</div><div class="sbar"><div class="sfill" style="width:91%;background:var(--purple)"></div></div><span class="chip ch-hot">💻 Base tech</span></div>
+      <div class="subj sa"><div class="stop"><span class="sic">🏛️</span><span class="spc sp-a">64%</span></div><div class="snm2">Historia</div><div class="sbar"><div class="sfill" style="width:64%;background:var(--amber)"></div></div><span class="chip ch-r">Repasar</span></div>
+      <div class="subj sc2"><div class="stop"><span class="sic">🔬</span><span class="spc sp-c">85%</span></div><div class="snm2">Biología</div><div class="sbar"><div class="sfill" style="width:85%;background:var(--cyan)"></div></div><span class="chip ch-ok">✓ Al día</span></div>
+      <div class="subj spk"><div class="stop"><span class="sic">📝</span><span class="spc sp-pk">78%</span></div><div class="snm2">Literatura</div><div class="sbar"><div class="sfill" style="width:78%;background:var(--pink)"></div></div><span class="chip ch-ok">✓ Al día</span></div>
+      <div class="subj sg"><div class="stop"><span class="sic">🇬🇧</span><span class="spc sp-g">55%</span></div><div class="snm2">Inglés</div><div class="sbar"><div class="sfill" style="width:55%;background:var(--green)"></div></div><span class="chip ch-hot">💻 Clave en tech</span></div>
+      <div class="subj sr"><div class="stop"><span class="sic">⚗️</span><span class="spc sp-r">80%</span></div><div class="snm2">Química</div><div class="sbar"><div class="sfill" style="width:80%;background:var(--red)"></div></div><span class="chip ch-ok">✓ Al día</span></div>
+    </div>
+  </div>
+  <div class="med-card">
+    <div class="med-top"><div class="medic">🩺</div><div><div class="medh">Medicina — Conocé tu cuerpo</div><div class="meds">Lo que hacer antes de que llegue el médico</div></div></div>
+    <div class="med-chips"><span class="mchip">🦴 Sistema óseo</span><span class="mchip">❤️ Primeros auxilios</span><span class="mchip">🧠 El cerebro</span><span class="mchip">🩸 RCP</span><span class="mchip">💊 Medicamentos</span></div>
+  </div>
+  <div class="life">
+    <div class="lifeh"><div class="lifeic">💜</div><div><div class="lifehead">Educación para la Vida</div><div class="lifesub">Lo que ningún libro enseña</div></div></div>
+    <div class="lifechips"><span class="lchip">❤️ Relaciones</span><span class="lchip">🧠 Salud mental</span><span class="lchip">✋ Consentimiento</span><span class="lchip">💰 Finanzas</span><span class="lchip">🌈 Diversidad</span></div>
+  </div>
+  <div class="streak">
+    <div class="sf">🔥</div>
+    <div class="si2"><div class="snum">14 días</div><div class="slbl">aprendiendo seguido</div></div>
+    <div class="sdrow"><div class="dd done">L</div><div class="dd done">M</div><div class="dd done">M</div><div class="dd today">J</div><div class="dd pen">V</div><div class="dd pen">S</div><div class="dd pen">D</div></div>
+  </div>
+</div>
+<div class="bnav">
+  <div class="ni on"><span class="nic">🏠</span><span class="nil">Inicio</span></div>
+  <div class="ni"><span class="nic">💻</span><span class="nil">Tech</span></div>
+  <div class="ni"><span class="nic">🎓</span><span class="nil">Futuro</span></div>
+  <div class="ni"><span class="nic">📚</span><span class="nil">Materias</span></div>
+  <div class="ni"><span class="nic">👤</span><span class="nil">Perfil</span></div>
+</div>
+<script>
+let selectedAge='3';
+let selectedProfile={key:'neuro',icon:'🧠',name:'Estándar'};
+function goStep(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));document.getElementById('step'+n).classList.add('active');}
+function selAge(el,val){document.querySelectorAll('.ob-age').forEach(e=>e.classList.remove('on'));el.classList.add('on');selectedAge=val;}
+function selProfile(el,key,icon,name){document.querySelectorAll('.ob-profile').forEach(e=>e.classList.remove('on'));el.classList.add('on');selectedProfile={key,icon,name};}
+const profileMsgs={neuro:(n)=>`¡Hola ${n}! Tenés <span>Historia</span> pendiente y contenido nuevo en <span>Tech Track</span>. ¿Arrancamos?`,tea1:(n)=>`Hola ${n}. Hoy: 1. Historia. 2. Tech Track. 3. Ciencias. Sin sorpresas.`,tdah:(n)=>`¡${n}! ⚡ 10 minutos Historia, descanso, 10 minutos Tech. ¡Vamos rápido!`,dis:(n)=>`Hola ${n} 🎧. Audios de <span>Historia</span> y Tech Track visual listos para hoy.`};
+function startApp(){
+  const nm=document.getElementById('ob-name').value.trim()||'Lucas';
+  const yr=parseInt(selectedAge);
+  document.getElementById('user-name').textContent=nm;
+  document.getElementById('user-av').textContent=selectedProfile.icon;
+  document.getElementById('pb-icon').textContent=selectedProfile.icon;
+  document.getElementById('pb-name').textContent=`Perfil: ${selectedProfile.name} · ${selectedAge}° año`;
+  document.getElementById('hdr-sub').textContent=`Secundario · ${selectedAge}° año`;
+  document.getElementById('bubbleText').innerHTML=(profileMsgs[selectedProfile.key]||profileMsgs.neuro)(nm);
+  const techSection=document.getElementById('tech-section');
+  if(yr>=3){techSection.style.display='block';const badge=techSection.querySelector('.tech-badge');if(yr===3)badge.textContent='AHORA ES TU MOMENTO';else if(yr>=4)badge.textContent='EN PROGRESO';}
+  else{techSection.style.display='none';}
+  const yearsBuilt=Math.max(1,yr-1);
+  document.getElementById('voc-note').innerHTML=`📊 Estás en <strong>${yr}° año</strong> — Claude lleva ${yearsBuilt} año${yearsBuilt>1?'s':''} construyendo tu perfil. ${yr<6?'A medida que avanzás, las recomendaciones se vuelven más precisas.':'¡Es el momento de elegir tu carrera!'}`;
+  document.getElementById('onboard').classList.add('hidden');
+  document.getElementById('mainApp').style.display='flex';
+}
+const expr={happy:{anim:'happy',mood:'🎯 Listo para arrancar'},excited:{anim:'excited',mood:'🔥 ¡Energía máxima!'},thinking:{anim:'thinking',mood:'🤔 Procesando...'},proud:{anim:'proud',mood:'💪 Muy orgulloso de vos'}};
+function setExpr(type,btn){document.getElementById('claudeChar').className='cav '+expr[type].anim;document.getElementById('moodLabel').textContent=expr[type].mood;document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+const modes={study:{type:'happy',msg:'Arrancamos con <span>Historia</span>. Tu racha de 14 días depende de hoy. ¿Empezamos?'},rest:{type:'excited',msg:'¡Hoy es tu día de <span>descanso</span>! Jugá, desconectate y recargá energía 🎮'},science:{type:'thinking',msg:'Modo <span>científico</span> activado. ¿Destilamos agua o armamos el telescopio? ⚗️'},tech:{type:'excited',msg:'¡<span>Tech Track</span> activado! Hoy te muestro cómo programar tu primer bot con Python. ¿Arrancamos? 💻'},uni:{type:'proud',msg:'Tu perfil dice que sos ideal para <span>Ingeniería en IA</span> o <span>Desarrollo de Software</span>. Hablemos de tu futuro 🎓'}};
+function setMode(mode,btn){document.querySelectorAll('.daypill').forEach(b=>{b.style.opacity='.5';b.style.transform='scale(.96)';});btn.style.opacity='1';btn.style.transform='scale(1)';const m=modes[mode];document.getElementById('claudeChar').className='cav '+expr[m.type].anim;document.getElementById('moodLabel').textContent=expr[m.type].mood;document.getElementById('bubbleText').innerHTML=m.msg;document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.ebtn')[{happy:0,excited:1,thinking:2,proud:3}[m.type]||0].classList.add('on');}
+function celebrate(){const w=document.getElementById('cfw');w.innerHTML='';w.style.display='block';const colors=['#8b5cf6','#00d4ff','#10b981','#f59e0b','#ec4899','#3b82f6','#7928ca'];for(let i=0;i<100;i++){const cf=document.createElement('div');cf.className='cf';cf.style.cssText=`left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*9}px;height:${6+Math.random()*9}px;border-radius:${Math.random()>.5?'50%':'3px'};animation:cff ${1.5+Math.random()*2}s ${Math.random()*.8}s linear forwards;`;w.appendChild(cf);}setExpr('excited',document.querySelectorAll('.ebtn')[1]);setTimeout(()=>{w.style.display='none';setExpr('proud',document.querySelectorAll('.ebtn')[3]);},3500);}
+const quizzes={
+  filosofia:{ic:'🧠',cat:'FILOSOFÍA',preguntas:[
+    {q:'¿Quién dijo "Solo sé que no sé nada"?',opts:['Platón','Aristóteles','Sócrates','Descartes'],ok:2},
+    {q:'¿Qué rama de la filosofía estudia el conocimiento?',opts:['Ética','Epistemología','Ontología','Estética'],ok:1},
+    {q:'El imperativo categórico fue propuesto por:',opts:['Hegel','Nietzsche','Kant','Locke'],ok:2},
+    {q:'"El hombre es un animal político" — ¿quién lo dijo?',opts:['Platón','Aristóteles','Marx','Rousseau'],ok:1},
+    {q:'¿Qué significa "tabula rasa" en filosofía?',opts:['Mente llena','Mente en blanco','Razón pura','Libre albedrío'],ok:1}
+  ]},
+  fisica:{ic:'⚡',cat:'FÍSICA',preguntas:[
+    {q:'¿Cuál es la velocidad de la luz en el vacío?',opts:['200.000 km/s','300.000 km/s','400.000 km/s','500.000 km/s'],ok:1},
+    {q:'¿Quién formuló la teoría de la relatividad?',opts:['Newton','Bohr','Einstein','Tesla'],ok:2},
+    {q:'¿Qué unidad mide la fuerza?',opts:['Joule','Watt','Newton','Pascal'],ok:2},
+    {q:'¿Qué es la masa en reposo de un electrón?',opts:['9.1×10⁻³¹ kg','1.6×10⁻¹⁹ kg','6.7×10⁻²⁷ kg','3.2×10⁻¹⁵ kg'],ok:0},
+    {q:'¿Qué ley dice que la energía no se crea ni se destruye?',opts:['Newton','Termodinámica','Ohm','Faraday'],ok:1}
+  ]},
+  historia:{ic:'🌍',cat:'HISTORIA MUNDIAL',preguntas:[
+    {q:'¿En qué año cayó el Muro de Berlín?',opts:['1985','1987','1989','1991'],ok:2},
+    {q:'¿Qué guerra terminó en 1945?',opts:['1° Guerra Mundial','Guerra Fría','2° Guerra Mundial','Guerra de Corea'],ok:2},
+    {q:'¿Quién lideró la Revolución Rusa de 1917?',opts:['Stalin','Trotsky','Lenin','Kerensky'],ok:2},
+    {q:'¿En qué país se originó la Revolución Industrial?',opts:['Francia','Alemania','Estados Unidos','Reino Unido'],ok:3},
+    {q:'¿Qué tratado terminó la Primera Guerra Mundial?',opts:['Tratado de París','Tratado de Versalles','Tratado de Roma','Armisticio de Berlín'],ok:1}
+  ]},
+  tech:{ic:'💻',cat:'TECH & PROGRAMACIÓN',preguntas:[
+    {q:'¿Qué significa "HTML"?',opts:['HyperText Markup Language','High Tech Modern Language','Hyper Transfer Meta Links','Host Terminal Main Loop'],ok:0},
+    {q:'¿Quién creó Python?',opts:['James Gosling','Guido van Rossum','Brendan Eich','Linus Torvalds'],ok:1},
+    {q:'¿Qué es un algoritmo?',opts:['Un lenguaje de programación','Un tipo de dato','Una secuencia de pasos para resolver un problema','Un error de código'],ok:2},
+    {q:'¿Cuántos bits tiene 1 byte?',opts:['4','8','16','32'],ok:1},
+    {q:'¿Qué hace "return" en programación?',opts:['Imprime un valor','Termina el programa','Devuelve un valor desde una función','Importa una librería'],ok:2}
+  ]},
+  mate:{ic:'📐',cat:'MATEMÁTICA',preguntas:[
+    {q:'¿Cuánto es log₂(64)?',opts:['5','6','7','8'],ok:1},
+    {q:'¿Cuál es la derivada de x²?',opts:['x','2x','x²','2x²'],ok:1},
+    {q:'¿Cuántos números primos hay entre 1 y 20?',opts:['6','7','8','9'],ok:2},
+    {q:'¿Cuál es el valor de π a 4 decimales?',opts:['3.1415','3.1416','3.1417','3.1418'],ok:1},
+    {q:'¿Raíz cuadrada de 169?',opts:['11','12','13','14'],ok:2}
+  ]},
+  ingles:{ic:'🇬🇧',cat:'ADVANCED ENGLISH',preguntas:[
+    {q:'What is the past perfect of "to go"?',opts:['went','had gone','have gone','was going'],ok:1},
+    {q:'Which word means "ubiquitous"?',opts:['Rare','Everywhere','Hidden','Ancient'],ok:1},
+    {q:'"Despite the rain, she..." — which is correct?',opts:['went out','has went out','did went out','go out'],ok:0},
+    {q:'What does "procrastinate" mean?',opts:['To work hard','To delay tasks','To organize things','To communicate'],ok:1},
+    {q:'Which is a type 2 conditional?',opts:['If it rains, I stay','If it rained, I would stay','If it had rained, I would have stayed','When it rains, I stay'],ok:1}
+  ]}
+};
+let currentQuiz=null,currentQ=0,pts=0;
+function openQuiz(tipo){currentQuiz=quizzes[tipo];currentQ=0;pts=0;document.getElementById('qIc').textContent=currentQuiz.ic;document.getElementById('qCat').textContent=currentQuiz.cat;showQuestion();document.getElementById('quizOverlay').classList.add('show');}
+function showQuestion(){if(currentQ>=currentQuiz.preguntas.length){document.getElementById('qQ').textContent='¡Terminaste! 🎉 Ganaste '+pts+' puntos';document.getElementById('qOpts').innerHTML='';document.getElementById('qPts').textContent='';return;}const p=currentQuiz.preguntas[currentQ];document.getElementById('qQ').textContent=p.q;document.getElementById('qPts').textContent='';const opts=document.getElementById('qOpts');opts.innerHTML='';p.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='qopt';b.textContent=o;b.onclick=()=>{document.querySelectorAll('.qopt').forEach(x=>x.style.pointerEvents='none');if(i===p.ok){b.classList.add('correct');pts+=30;document.getElementById('qPts').textContent='✅ ¡Exacto! +30 pts';}else{b.classList.add('wrong');document.querySelectorAll('.qopt')[p.ok].classList.add('correct');document.getElementById('qPts').textContent='❌ Era la otra — ¡seguí!';}currentQ++;setTimeout(showQuestion,1500);};opts.appendChild(b);});}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('show');}
+</script>
+</body>
+</html>
+
