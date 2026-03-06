@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Kids — Primario</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg1:#0d0d1a;--bg2:#13132a;--bg3:#0a1628;--purple:#8b5cf6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--orange:#f97316;--red:#ef4444;--card:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.09);--text:#f0f0f8;--muted:rgba(240,240,248,0.5);}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2) 50%,var(--bg3));min-height:100vh;color:var(--text);overflow-x:hidden;}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.sd{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite;animation-delay:var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.1}50%{opacity:.8}}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.o1{width:350px;height:350px;background:rgba(139,92,246,.1);top:-80px;right:-60px;}
+.o2{width:280px;height:280px;background:rgba(6,182,212,.07);bottom:-60px;left:-40px;}
+.o3{width:200px;height:200px;background:rgba(236,72,153,.07);top:45%;right:5%;}
+.cf-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
+.cf{position:absolute;border-radius:2px;animation:cff linear forwards;}
+@keyframes cff{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:13px;min-height:100vh;display:flex;flex-direction:column;gap:11px;padding-bottom:20px;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--card);border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(20px);}
+.logo{display:flex;align-items:center;gap:9px;}
+.lic{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),#6d28d9);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2em;box-shadow:0 4px 14px rgba(139,92,246,.4);}
+.lnm{font-size:1em;font-weight:900;color:white;}
+.llv{font-size:.7em;color:var(--cyan);font-weight:700;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.pts{background:linear-gradient(135deg,var(--amber),#d97706);color:white;font-size:.78em;font-weight:900;padding:5px 12px;border-radius:20px;box-shadow:0 3px 10px rgba(245,158,11,.4);}
+.av{width:36px;height:36px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1em;border:2px solid rgba(255,255,255,.15);}
+.day-strip{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;}
+.day-strip::-webkit-scrollbar{display:none}
+.daypill{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:.78em;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid var(--border);}
+.daypill.study{background:linear-gradient(135deg,var(--purple),#6d28d9);color:white;border-color:transparent;box-shadow:0 3px 12px rgba(139,92,246,.35);}
+.daypill.rest{background:linear-gradient(135deg,var(--green),var(--cyan));color:var(--bg1);border-color:transparent;box-shadow:0 3px 12px rgba(16,185,129,.3);}
+.daypill.science{background:linear-gradient(135deg,var(--orange),var(--red));color:white;border-color:transparent;box-shadow:0 3px 12px rgba(249,115,22,.3);}
+.daypill:not(.study):not(.rest):not(.science){color:var(--muted);}
+.claude-hero{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(6,182,212,.1));border:1px solid rgba(139,92,246,.24);border-radius:26px;padding:17px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;position:relative;overflow:hidden;}
+.claude-hero::after{content:'CLAUDE KIDS';position:absolute;bottom:12px;right:14px;font-size:.5em;font-weight:900;color:rgba(139,92,246,.15);letter-spacing:3px;}
+.cav{flex-shrink:0;}
+.cav.happy{animation:bounce 2.5s ease-in-out infinite;}
+.cav.excited{animation:wiggle .5s ease-in-out infinite;}
+.cav.thinking{animation:sway 3s ease-in-out infinite;}
+.cav.proud{animation:float-up 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(-8deg) scale(1.05)}50%{transform:rotate(8deg) scale(1.1)}}
+@keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes float-up{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.05)}}
+.cstatus{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:3px 9px;font-size:.68em;font-weight:800;color:var(--green);margin-bottom:6px;}
+.cdot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.cmood{font-size:.72em;font-weight:800;color:var(--purple);margin-bottom:5px;}
+.cmsg{font-size:.92em;font-weight:800;color:white;line-height:1.45;margin-bottom:10px;}
+.cmsg span{color:var(--cyan);}
+.askrow{display:flex;gap:7px;}
+.askin{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 13px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.82em;outline:none;transition:border-color .2s;}
+.askin::placeholder{color:var(--muted);}
+.askin:focus{border-color:var(--purple);}
+.asksend{width:38px;height:38px;background:var(--purple);border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1em;box-shadow:0 3px 12px rgba(139,92,246,.4);flex-shrink:0;transition:transform .15s;}
+.asksend:active{transform:scale(.9);}
+.expr-row{display:flex;gap:6px;margin-top:12px;}
+.ebtn{flex:1;padding:7px 4px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:.85em;cursor:pointer;transition:all .15s;text-align:center;font-weight:800;font-family:'Nunito',sans-serif;color:var(--muted);}
+.ebtn.on{background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.4);color:white;}
+.ebtn:active{transform:scale(.93);}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px 9px;text-align:center;}
+.sn{font-size:1.55em;font-weight:900;line-height:1;margin-bottom:3px;}
+.sl{font-size:.68em;color:var(--muted);font-weight:700;}
+.snp{color:var(--purple)}.sng{color:var(--green)}.sna{color:var(--amber)}
+.celeb-btn{background:linear-gradient(135deg,#f97316,#ef4444);border:none;border-radius:18px;padding:15px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;box-shadow:0 5px 20px rgba(249,115,22,.35);transition:transform .15s;}
+.celeb-btn:active{transform:scale(.97);}
+.cbic{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;flex-shrink:0;border:2px solid rgba(255,255,255,.3);}
+.cbinfo{flex:1;color:white;}
+.cbt{font-size:.95em;font-weight:900;margin-bottom:2px;}
+.cbs{font-size:.76em;opacity:.85;font-weight:600;}
+.live{background:linear-gradient(135deg,#4c1d95,#7c3aed);border:1px solid rgba(139,92,246,.4);border-radius:20px;padding:16px 18px;display:flex;align-items:center;gap:13px;cursor:pointer;width:100%;box-shadow:0 6px 24px rgba(109,40,217,.4);position:relative;overflow:hidden;transition:transform .15s;}
+.live:active{transform:scale(.97);}
+.live::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 60%);}
+.lring-w{width:52px;height:52px;flex-shrink:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;position:relative;}
+.lring-w::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(139,92,246,.4);animation:lr 2s ease-in-out infinite;}
+@keyframes lr{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:0;transform:scale(1.15)}}
+.ldot{position:absolute;top:4px;right:4px;width:11px;height:11px;background:#2ecc71;border-radius:50%;border:2px solid var(--bg1);animation:blink 1s infinite;}
+.lc{flex:1;color:white;}
+.lt{font-size:1.05em;font-weight:900;display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.lpill{background:rgba(255,255,255,.2);font-size:.58em;padding:2px 7px;border-radius:6px;letter-spacing:1px;font-weight:800;}
+.ls{font-size:.8em;opacity:.8;font-weight:600;}
+.vsec{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+.vh{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--border);}
+.vt{font-size:.88em;font-weight:900;color:white;display:flex;align-items:center;gap:7px;}
+.va{font-size:.75em;font-weight:700;color:var(--cyan);cursor:pointer;}
+.vscroll{display:flex;gap:10px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.vscroll::-webkit-scrollbar{display:none}
+.vcard{flex-shrink:0;width:155px;cursor:pointer;transition:transform .15s;}
+.vcard:active{transform:scale(.95);}
+.vthumb{width:100%;height:88px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.4em;position:relative;margin-bottom:7px;border:1px solid var(--border);}
+.vt1{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(59,130,246,.2));}
+.vt2{background:linear-gradient(135deg,rgba(6,182,212,.2),rgba(16,185,129,.2));}
+.vt3{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.2));}
+.vt4{background:linear-gradient(135deg,rgba(236,72,153,.2),rgba(139,92,246,.2));}
+.vbadge{position:absolute;top:5px;right:5px;font-size:.5em;font-weight:900;padding:2px 6px;border-radius:5px;}
+.vbn{background:var(--cyan);color:var(--bg1);}
+.vbh{background:var(--pink);color:white;}
+.vplay{position:absolute;bottom:5px;left:5px;width:23px;height:23px;background:rgba(255,255,255,.88);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55em;}
+.vnm{font-size:.78em;font-weight:800;color:white;line-height:1.3;margin-bottom:2px;}
+.vmeta{font-size:.68em;color:var(--muted);}
+.sci-sec{background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(239,68,68,.08));border:1px solid rgba(249,115,22,.25);border-radius:22px;overflow:hidden;}
+.scih{background:linear-gradient(135deg,#f97316,#ef4444);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.sciic{width:37px;height:37px;background:rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.scit{font-size:.94em;font-weight:900;color:white;}
+.scis{font-size:.72em;opacity:.85;font-weight:600;color:white;}
+.sciscroll{display:flex;gap:10px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.sciscroll::-webkit-scrollbar{display:none}
+.scicard{flex-shrink:0;width:140px;background:rgba(255,255,255,.06);border:1px solid rgba(249,115,22,.2);border-radius:16px;padding:12px 9px;text-align:center;cursor:pointer;transition:transform .15s;}
+.scicard:active{transform:scale(.93);}
+.scithumb{width:100%;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.4em;margin-bottom:7px;}
+.s1{background:linear-gradient(135deg,rgba(255,152,0,.2),rgba(255,87,34,.2));}
+.s2{background:linear-gradient(135deg,rgba(76,175,80,.2),rgba(0,188,212,.2));}
+.s3{background:linear-gradient(135deg,rgba(156,39,176,.2),rgba(233,30,99,.2));}
+.s4{background:linear-gradient(135deg,rgba(33,150,243,.2),rgba(0,188,212,.2));}
+.scinm{font-size:.74em;font-weight:800;color:var(--text);line-height:1.3;}
+.scilevel{display:inline-block;margin-top:4px;font-size:.62em;font-weight:800;padding:2px 7px;border-radius:8px;}
+.easy{background:rgba(16,185,129,.15);color:var(--green);}
+.med{background:rgba(245,158,11,.15);color:var(--amber);}
+.hard{background:rgba(239,68,68,.15);color:var(--red);}
+/* REST GAMES */
+.rest-sec{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.08));border:1px solid rgba(16,185,129,.22);border-radius:22px;overflow:hidden;}
+.resth{background:linear-gradient(135deg,#059669,#0284c7);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.restic{width:37px;height:37px;background:rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.restt{font-size:.94em;font-weight:900;color:white;}
+.rests{font-size:.72em;opacity:.85;font-weight:600;color:white;}
+.rest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px;}
+.gcard{background:rgba(255,255,255,.05);border:1px solid rgba(16,185,129,.18);border-radius:15px;padding:13px 7px;text-align:center;cursor:pointer;transition:transform .15s;}
+.gcard:active{transform:scale(.92);}
+.gic{font-size:2em;display:block;margin-bottom:5px;}
+.gnm{font-size:.7em;font-weight:800;color:var(--text);line-height:1.3;}
+.gtag{display:inline-block;margin-top:3px;font-size:.58em;font-weight:800;background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.2);padding:2px 5px;border-radius:5px;}
+/* QUIZ OVERLAY */
+.quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.quiz-overlay.show{display:flex;}
+.quiz-box{background:#13132a;border:1px solid rgba(139,92,246,.3);border-radius:28px;padding:26px 22px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.quiz-ic{font-size:2.8em;margin-bottom:8px;}
+.quiz-cat{font-size:.68em;font-weight:900;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.quiz-q{font-size:1.05em;font-weight:900;color:white;margin-bottom:18px;line-height:1.5;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.qopt{padding:13px 8px;border-radius:14px;border:1px solid rgba(139,92,246,.25);background:rgba(139,92,246,.08);font-size:.88em;font-weight:800;color:white;cursor:pointer;transition:all .15s;font-family:'Nunito',sans-serif;}
+.qopt:active{transform:scale(.96);}
+.qopt.correct{background:rgba(16,185,129,.2);border-color:var(--green);color:#6ee7b7;}
+.qopt.wrong{background:rgba(239,68,68,.2);border-color:var(--red);color:#fca5a5;}
+.quiz-pts{font-size:.8em;font-weight:800;color:var(--amber);min-height:22px;}
+.quiz-close{margin-top:14px;background:linear-gradient(135deg,var(--purple),#6d28d9);color:white;border:none;border-radius:14px;padding:12px 30px;font-size:.92em;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 16px rgba(139,92,246,.4);}
+.weekly{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.1));border:1px solid rgba(16,185,129,.22);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s;}
+.weekly:active{transform:scale(.97);}
+.wic{width:48px;height:48px;flex-shrink:0;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4em;box-shadow:0 4px 12px rgba(16,185,129,.35);}
+.wi{flex:1;}
+.wt{font-size:.9em;font-weight:900;color:white;margin-bottom:2px;}
+.ws{font-size:.74em;color:rgba(255,255,255,.55);font-weight:600;}
+.war{color:var(--green);font-size:1.2em;}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.sht{font-size:.88em;font-weight:900;color:rgba(255,255,255,.85);}
+.shl{font-size:.75em;font-weight:700;color:var(--purple);cursor:pointer;}
+.subj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.subj{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:13px 7px;text-align:center;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden;}
+.subj:active{transform:scale(.93);}
+.subj::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:17px 17px 0 0;}
+.jp::before{background:linear-gradient(90deg,var(--purple),var(--blue));}
+.jc::before{background:linear-gradient(90deg,var(--cyan),var(--green));}
+.jg::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
+.ja::before{background:linear-gradient(90deg,var(--amber),#f97316);}
+.jpk::before{background:linear-gradient(90deg,var(--pink),var(--purple));}
+.jb::before{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.sjic{font-size:2em;display:block;margin-bottom:5px;}
+.sjnm{font-size:.72em;font-weight:800;color:rgba(255,255,255,.9);line-height:1.2;}
+.sjbar{margin-top:5px;height:3px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.sjfill{height:100%;border-radius:3px;}
+.stag{position:absolute;top:5px;right:5px;font-size:.5em;font-weight:900;padding:2px 5px;border-radius:5px;}
+.tgh{background:rgba(239,68,68,.15);color:#f87171;}
+.tgn{background:rgba(16,185,129,.15);color:var(--green);}
+.career{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.07));border:1px solid rgba(245,158,11,.2);border-radius:18px;padding:15px;}
+.carh{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.caric{width:42px;height:42px;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.22);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.carhead{font-size:.9em;font-weight:900;color:white;}
+.carsub{font-size:.72em;color:rgba(245,158,11,.8);font-weight:600;}
+.carchips{display:flex;flex-wrap:wrap;gap:6px;}
+.cchip{font-size:.72em;font-weight:800;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+.streak{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(239,68,68,.07));border:1px solid rgba(245,158,11,.2);border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px;}
+.sf{font-size:2.2em;animation:flame .9s ease-in-out infinite alternate;}
+@keyframes flame{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.1) rotate(4deg)}}
+.si2{flex:1;}
+.snn{font-size:1.8em;font-weight:900;color:var(--amber);line-height:1;}
+.sll{font-size:.78em;color:var(--muted);font-weight:700;}
+.sdrow{display:flex;gap:5px;}
+.dd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68em;font-weight:800;}
+.dd.done{background:var(--amber);color:var(--bg1);box-shadow:0 2px 8px rgba(245,158,11,.4);}
+.dd.today{background:var(--purple);color:white;animation:tp 1s infinite;}
+@keyframes tp{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.4)}50%{box-shadow:0 0 0 5px rgba(139,92,246,0)}}
+.dd.pen{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);}
+.bnav{background:rgba(10,10,20,.88);border:1px solid var(--border);border-radius:24px;padding:10px 6px;display:flex;justify-content:space-around;backdrop-filter:blur(30px);position:sticky;bottom:12px;margin-top:auto;box-shadow:0 8px 30px rgba(0,0,0,.3);}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 9px;border-radius:14px;cursor:pointer;flex:1;transition:background .15s;}
+.ni.on{background:rgba(139,92,246,.14);}
+.nic{font-size:1.25em;}
+.nil{font-size:.6em;font-weight:800;color:var(--muted);}
+.ni.on .nil{color:var(--purple);}
+</style>
+</head>
+<body>
+<div class="cf-wrap" id="cfWrap"></div>
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <div class="quiz-ic" id="qIc">🌍</div>
+    <div class="quiz-cat" id="qCat">GEOGRAFÍA</div>
+    <div class="quiz-q" id="qQ">¿Cuál es la capital de Argentina?</div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-pts" id="qPts"></div>
+    <button class="quiz-close" onclick="closeQuiz()">¡Seguir jugando! 🎮</button>
+  </div>
+</div>
+<div class="stars">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="sd" style="width:2px;height:2px;top:9%;left:14%;--d:2.5s;--dl:0s"></div>
+  <div class="sd" style="width:3px;height:3px;top:22%;left:72%;--d:3.5s;--dl:.5s"></div>
+  <div class="sd" style="width:2px;height:2px;top:38%;left:28%;--d:2s;--dl:1s"></div>
+  <div class="sd" style="width:2px;height:2px;top:58%;left:88%;--d:4s;--dl:.3s"></div>
+  <div class="sd" style="width:3px;height:3px;top:72%;left:8%;--d:2.8s;--dl:.7s"></div>
+</div>
+<div class="app">
+  <div class="hdr">
+    <div class="logo"><div class="lic">🤖</div><div><div class="lnm">Claude Kids</div><div class="llv">📚 Primario</div></div></div>
+    <div class="hdr-r"><div class="pts">⭐ 1.540 pts</div><div class="av">👦</div></div>
+  </div>
+  <div class="day-strip">
+    <div class="daypill study" onclick="setMode('study',this)">📚 Aprender</div>
+    <div class="daypill rest" onclick="setMode('rest',this)">🎮 Descanso</div>
+    <div class="daypill science" onclick="setMode('science',this)">🔬 Científico</div>
+  </div>
+  <div class="claude-hero">
+    <div class="cav happy" id="claudeChar">
+      <svg width="82" height="82" viewBox="0 0 82 82" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4c1d95"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient><radialGradient id="eg2" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient></defs>
+        <rect width="82" height="82" rx="22" fill="url(#bg2)"/>
+        <ellipse cx="27" cy="35" rx="11" ry="12" fill="url(#eg2)"/><ellipse cx="55" cy="35" rx="11" ry="12" fill="url(#eg2)"/>
+        <circle cx="28" cy="36" r="7" fill="#1e1b4b"/><circle cx="56" cy="36" r="7" fill="#1e1b4b"/>
+        <circle cx="31" cy="32" r="2.5" fill="white" opacity=".9"/><circle cx="59" cy="32" r="2.5" fill="white" opacity=".9"/>
+        <path d="M 28 53 Q 41 63 54 53" stroke="#c4b5fd" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="41" y1="8" x2="41" y2="18" stroke="#a78bfa" stroke-width="2"/><circle cx="41" cy="6" r="4" fill="#c4b5fd"/>
+        <ellipse cx="17" cy="48" rx="6" ry="4" fill="#ec4899" opacity=".32"/><ellipse cx="65" cy="48" rx="6" ry="4" fill="#ec4899" opacity=".32"/>
+        <circle cx="68" cy="14" r="10" fill="#10b981"/><text x="68" y="18" text-anchor="middle" font-size="9" fill="white" font-weight="bold">ON</text>
+      </svg>
+    </div>
+    <div>
+      <div class="cstatus"><div class="cdot"></div>Claude activo</div>
+      <div class="cmood" id="moodLabel">😊 ¡Listo para aprender!</div>
+      <div class="cmsg" id="bubbleText">¡Hola Mateo! Hoy tenés <span>Ciencias</span> y un video nuevo de <span>Tecnología</span> 🚀</div>
+      <div class="askrow"><input class="askin" placeholder="Preguntale a Claude..."/><button class="asksend">➤</button></div>
+      <div class="expr-row">
+        <button class="ebtn on" onclick="setExpr('happy',this)">😊 Feliz</button>
+        <button class="ebtn" onclick="setExpr('excited',this)">🤩 ¡Wow!</button>
+        <button class="ebtn" onclick="setExpr('thinking',this)">🤔 Pensando</button>
+        <button class="ebtn" onclick="setExpr('proud',this)">😎 Orgulloso</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="sc"><div class="sn snp">78%</div><div class="sl">Promedio</div></div>
+    <div class="sc"><div class="sn sng">7🔥</div><div class="sl">Días seguidos</div></div>
+    <div class="sc"><div class="sn sna">1.5k</div><div class="sl">Puntos</div></div>
+  </div>
+  <button class="celeb-btn" onclick="celebrate()">
+    <div class="cbic">🎉</div>
+    <div class="cbinfo"><div class="cbt">¡Terminé una actividad!</div><div class="cbs">Tocá para que Claude te felicite 🎊</div></div>
+  </button>
+  <button class="live">
+    <div class="lring-w">🎤<div class="ldot"></div></div>
+    <div class="lc"><div class="lt">Hablar con Claude <span class="lpill">EN VIVO</span></div><div class="ls">Preguntame lo que quieras 💬</div></div>
+    <span style="color:rgba(255,255,255,.4);font-size:1.3em">›</span>
+  </button>
+  <div class="vsec">
+    <div class="vh"><div class="vt">🎬 Videos que te vuelan la cabeza</div><div class="va">Ver todos →</div></div>
+    <div class="vscroll">
+      <div class="vcard"><div class="vthumb vt1">🌋<span class="vbadge vbn">NUEVO</span><div class="vplay">▶</div></div><div class="vnm">¿Cómo explotan los volcanes?</div><div class="vmeta">⏱ 5min · +90 pts</div></div>
+      <div class="vcard"><div class="vthumb vt2">🎮<span class="vbadge vbh">🔥</span><div class="vplay">▶</div></div><div class="vnm">Cómo se crea un videojuego</div><div class="vmeta">⏱ 7min · +110 pts</div></div>
+      <div class="vcard"><div class="vthumb vt3">🦕<div class="vplay">▶</div></div><div class="vnm">Historia del mundo: Dinosaurios</div><div class="vmeta">⏱ 6min · +80 pts</div></div>
+      <div class="vcard"><div class="vthumb vt4">🤖<span class="vbadge vbn">NUEVO</span><div class="vplay">▶</div></div><div class="vnm">¿Cómo funciona la IA?</div><div class="vmeta">⏱ 8min · +120 pts</div></div>
+    </div>
+  </div>
+  <div class="sci-sec">
+    <div class="scih"><div class="sciic">🔬</div><div><div class="scit">Claude Científico</div><div class="scis">Experimentos caseros que funcionan de verdad</div></div></div>
+    <div class="sciscroll">
+      <div class="scicard"><div class="scithumb s1">🌋</div><div class="scinm">Volcán de bicarbonato</div><span class="scilevel easy">Fácil</span></div>
+      <div class="scicard"><div class="scithumb s2">🌱</div><div class="scinm">Planta que crece en agua</div><span class="scilevel easy">Fácil</span></div>
+      <div class="scicard"><div class="scithumb s3">🌈</div><div class="scinm">Arcoíris con agua</div><span class="scilevel med">Medio</span></div>
+      <div class="scicard"><div class="scithumb s4">🧲</div><div class="scinm">Imán casero</div><span class="scilevel hard">Difícil</span></div>
+    </div>
+  </div>
+  <div class="rest-sec">
+    <div class="resth"><div class="restic">🎮</div><div><div class="restt">Juegos de Descanso</div><div class="rests">¡Divertite y aprendés sin darte cuenta!</div></div></div>
+    <div class="rest-grid">
+      <div class="gcard" onclick="openQuiz('geo')"><span class="gic">🌍</span><span class="gnm">Adivina el país</span><span class="gtag">Geografía</span></div>
+      <div class="gcard" onclick="openQuiz('ciencias')"><span class="gic">🔬</span><span class="gnm">Trivia Científica</span><span class="gtag">Ciencias</span></div>
+      <div class="gcard" onclick="openQuiz('historia')"><span class="gic">🏛️</span><span class="gnm">Historia del mundo</span><span class="gtag">Historia</span></div>
+      <div class="gcard" onclick="openQuiz('mate')"><span class="gic">🔢</span><span class="gnm">Desafío Matemático</span><span class="gtag">Matemática</span></div>
+      <div class="gcard" onclick="openQuiz('lengua')"><span class="gic">📝</span><span class="gnm">Palabras y Letras</span><span class="gtag">Lengua</span></div>
+      <div class="gcard" onclick="openQuiz('ingles')"><span class="gic">🇬🇧</span><span class="gnm">English Challenge</span><span class="gtag">Inglés</span></div>
+    </div>
+  </div>
+  <div class="weekly"><div class="wic">📊</div><div class="wi"><div class="wt">Charla Semanal con Claude</div><div class="ws">Mirá lo que lograste y lo que sigue 🎯</div></div><div class="war">›</div></div>
+  <div>
+    <div class="sh"><div class="sht">🎯 Materias</div><div class="shl">Ver todas →</div></div>
+    <div class="subj-grid">
+      <div class="subj jp"><span class="stag tgh">🔥</span><span class="sjic">📐</span><span class="sjnm">Matemática</span><div class="sjbar"><div class="sjfill" style="width:82%;background:var(--purple)"></div></div></div>
+      <div class="subj jc"><span class="sjic">📖</span><span class="sjnm">Lengua</span><div class="sjbar"><div class="sjfill" style="width:65%;background:var(--cyan)"></div></div></div>
+      <div class="subj jg"><span class="stag tgn">NEW</span><span class="sjic">🌿</span><span class="sjnm">Ciencias</span><div class="sjbar"><div class="sjfill" style="width:48%;background:var(--green)"></div></div></div>
+      <div class="subj ja"><span class="sjic">🗺️</span><span class="sjnm">Sociales</span><div class="sjbar"><div class="sjfill" style="width:75%;background:var(--amber)"></div></div></div>
+      <div class="subj jpk"><span class="sjic">🇬🇧</span><span class="sjnm">Inglés</span><div class="sjbar"><div class="sjfill" style="width:40%;background:var(--pink)"></div></div></div>
+      <div class="subj jb"><span class="sjic">💻</span><span class="sjnm">Tecnología</span><div class="sjbar"><div class="sjfill" style="width:55%;background:var(--blue)"></div></div></div>
+    </div>
+  </div>
+  <div class="career">
+    <div class="carh"><div class="caric">🔭</div><div><div class="carhead">Claude te conoce</div><div class="carsub">Basado en lo que más te gusta...</div></div></div>
+    <div class="carchips"><span class="cchip">🎮 Diseño de juegos</span><span class="cchip">🤖 Tecnología</span><span class="cchip">🔬 Ciencias</span><span class="cchip">💡 Inventar cosas</span></div>
+  </div>
+  <div class="streak">
+    <div class="sf">🔥</div>
+    <div class="si2"><div class="snn">7 días</div><div class="sll">de aprendizaje seguido</div></div>
+    <div class="sdrow">
+      <div class="dd done">L</div><div class="dd done">M</div><div class="dd done">M</div>
+      <div class="dd today">J</div><div class="dd pen">V</div><div class="dd pen">S</div><div class="dd pen">D</div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni on"><span class="nic">🏠</span><span class="nil">Inicio</span></div>
+    <div class="ni"><span class="nic">📚</span><span class="nil">Materias</span></div>
+    <div class="ni"><span class="nic">🔬</span><span class="nil">Ciencia</span></div>
+    <div class="ni"><span class="nic">🎮</span><span class="nil">Juegos</span></div>
+    <div class="ni"><span class="nic">👦</span><span class="nil">Perfil</span></div>
+  </div>
+</div>
+<script>
+const expr={happy:{anim:'happy',mood:'😊 ¡Listo para aprender!',msg:'¡Hola Mateo! Hoy tenés <span>Ciencias</span> y un video nuevo de <span>Tecnología</span> 🚀'},excited:{anim:'excited',mood:'🤩 ¡¡Esto es increíble!!',msg:'¡¡Wow Mateo!! ¡Hoy vamos a <span>volar la cabeza</span> aprendiendo! 🚀🔥'},thinking:{anim:'thinking',mood:'🤔 Mmm... déjame pensar...',msg:'Interesante pregunta, Mateo... déjame <span>pensar bien</span> para responderte 💭'},proud:{anim:'proud',mood:'😎 ¡Estoy muy orgulloso de vos!',msg:'¡Lo hiciste <span>increíble</span> Mateo! ¡Sos un crack del conocimiento! 🏆'}};
+function setExpr(type,btn){const e=expr[type];document.getElementById('claudeChar').className='cav '+e.anim;document.getElementById('moodLabel').textContent=e.mood;document.getElementById('bubbleText').innerHTML=e.msg;document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+const modes={study:{type:'happy',msg:'¡Hola Mateo! Hoy tenés <span>Ciencias</span> y un video nuevo de <span>Tecnología</span> 🚀'},rest:{type:'excited',msg:'¡¡Hoy es <span>día de juegos</span>!! El cerebro descansa y se recarga para mañana 🎮'},science:{type:'thinking',msg:'¡Modo <span>científico</span> activado! ¿Qué experimento hacemos hoy, Mateo? 🔬'}};
+function setMode(mode,btn){document.querySelectorAll('.daypill').forEach(b=>{b.style.opacity='.5';b.style.transform='scale(.96)';});btn.style.opacity='1';btn.style.transform='scale(1)';const m=modes[mode];const e=expr[m.type];document.getElementById('claudeChar').className='cav '+e.anim;document.getElementById('moodLabel').textContent=e.mood;document.getElementById('bubbleText').innerHTML=m.msg;document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.ebtn')[m.type==='happy'?0:m.type==='excited'?1:2].classList.add('on');}
+function celebrate(){const w=document.getElementById('cfWrap');w.innerHTML='';w.style.display='block';const colors=['#8b5cf6','#06b6d4','#10b981','#f59e0b','#ec4899','#3b82f6','#f97316'];for(let i=0;i<90;i++){const cf=document.createElement('div');cf.className='cf';cf.style.cssText=`left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation:cff ${1.5+Math.random()*2}s ${Math.random()*.8}s linear forwards;`;w.appendChild(cf);}setExpr('excited',document.querySelectorAll('.ebtn')[1]);setTimeout(()=>{w.style.display='none';setExpr('proud',document.querySelectorAll('.ebtn')[3]);},3200);}
+
+// QUIZ SYSTEM — se ven como juegos, enseñan materias
+const quizzes={
+  geo:{ic:'🌍',cat:'GEOGRAFÍA',preguntas:[
+    {q:'¿Cuál es la capital de Argentina?',opts:['Córdoba','Rosario','Buenos Aires','Mendoza'],ok:2},
+    {q:'¿Cuál es el río más largo del mundo?',opts:['Nilo','Amazonas','Mississippi','Paraná'],ok:0},
+    {q:'¿En qué continente está Brasil?',opts:['África','Europa','Asia','América del Sur'],ok:3},
+    {q:'¿Cuál es el océano más grande?',opts:['Atlántico','Índico','Pacífico','Ártico'],ok:2},
+    {q:'¿Cuántos países tiene América del Sur?',opts:['10','12','14','16'],ok:1}
+  ]},
+  ciencias:{ic:'🔬',cat:'CIENCIAS NATURALES',preguntas:[
+    {q:'¿Cuántos huesos tiene el cuerpo humano adulto?',opts:['106','206','306','406'],ok:1},
+    {q:'¿Qué gas respiramos principalmente?',opts:['Oxígeno','Nitrógeno','CO2','Hidrógeno'],ok:0},
+    {q:'¿Cuántos planetas tiene el sistema solar?',opts:['7','8','9','10'],ok:1},
+    {q:'¿Qué órgano bombea la sangre?',opts:['Pulmón','Hígado','Corazón','Riñón'],ok:2},
+    {q:'¿Cuál es el animal más rápido del mundo?',opts:['León','Guepardo','Águila','Caballo'],ok:1}
+  ]},
+  historia:{ic:'🏛️',cat:'HISTORIA',preguntas:[
+    {q:'¿En qué año se declaró la independencia de Argentina?',opts:['1810','1816','1820','1825'],ok:1},
+    {q:'¿Quién descubrió América en 1492?',opts:['Magallanes','Vespucio','Colón','Cabral'],ok:2},
+    {q:'¿Qué civilización construyó las pirámides?',opts:['Griegos','Romanos','Egipcios','Mayas'],ok:2},
+    {q:'¿En qué continente nació la escritura?',opts:['Europa','América','Asia','África'],ok:2},
+    {q:'¿Qué revolución ocurrió en Francia en 1789?',opts:['Industrial','Francesa','Americana','Rusa'],ok:1}
+  ]},
+  mate:{ic:'📐',cat:'MATEMÁTICA',preguntas:[
+    {q:'¿Cuánto es 7 × 8?',opts:['54','56','58','64'],ok:1},
+    {q:'¿Cuánto es 144 ÷ 12?',opts:['10','11','12','13'],ok:2},
+    {q:'¿Cuántos lados tiene un hexágono?',opts:['5','6','7','8'],ok:1},
+    {q:'¿Cuánto es 25% de 200?',opts:['25','40','50','75'],ok:2},
+    {q:'¿Cuál es el resultado de 15² ?',opts:['175','200','225','250'],ok:2}
+  ]},
+  lengua:{ic:'📝',cat:'LENGUA Y LITERATURA',preguntas:[
+    {q:'¿Cuántas sílabas tiene "mariposa"?',opts:['3','4','5','6'],ok:1},
+    {q:'¿Qué es un sinónimo de "feliz"?',opts:['Triste','Contento','Enojado','Cansado'],ok:1},
+    {q:'¿Cuál de estas palabras es un sustantivo?',opts:['Correr','Rápido','Mesa','Bien'],ok:2},
+    {q:'¿Qué signo va al final de una pregunta?',opts:['Punto','Coma','¿?','!'],ok:2},
+    {q:'"El perro corre" — ¿cuál es el sujeto?',opts:['corre','el','perro','El perro'],ok:3}
+  ]},
+  ingles:{ic:'🇬🇧',cat:'ENGLISH',preguntas:[
+    {q:'How do you say "gato" in English?',opts:['Dog','Bird','Cat','Fish'],ok:2},
+    {q:'What color is the sky?',opts:['Green','Red','Blue','Yellow'],ok:2},
+    {q:'How many days are in a week?',opts:['5','6','7','8'],ok:2},
+    {q:'What is "casa" in English?',opts:['Car','House','Tree','Book'],ok:1},
+    {q:'How do you say "gracias"?',opts:['Sorry','Please','Hello','Thank you'],ok:3}
+  ]}
+};
+let currentQuiz=null,currentQ=0,pts=0;
+function openQuiz(tipo){currentQuiz=quizzes[tipo];currentQ=0;pts=0;document.getElementById('qIc').textContent=currentQuiz.ic;document.getElementById('qCat').textContent=currentQuiz.cat;showQuestion();document.getElementById('quizOverlay').classList.add('show');}
+function showQuestion(){
+  if(currentQ>=currentQuiz.preguntas.length){document.getElementById('qQ').textContent='¡Terminaste! 🎉 Ganaste '+pts+' puntos';document.getElementById('qOpts').innerHTML='';document.getElementById('qPts').textContent='';return;}
+  const p=currentQuiz.preguntas[currentQ];
+  document.getElementById('qQ').textContent=p.q;
+  document.getElementById('qPts').textContent='';
+  const opts=document.getElementById('qOpts');
+  opts.innerHTML='';
+  p.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.textContent=o;
+    b.onclick=()=>{
+      document.querySelectorAll('.qopt').forEach(x=>x.style.pointerEvents='none');
+      if(i===p.ok){b.classList.add('correct');pts+=25;document.getElementById('qPts').textContent='✅ ¡Correcto! +25 pts';}
+      else{b.classList.add('wrong');document.querySelectorAll('.qopt')[p.ok].classList.add('correct');document.getElementById('qPts').textContent='❌ ¡Casi! Seguí intentando 💪';}
+      currentQ++;setTimeout(showQuestion,1500);
+    };
+    opts.appendChild(b);
+  });
+}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('show');}
+</script>
+</body>
+</html>
+
+
