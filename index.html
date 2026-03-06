@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Educative — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#06060b;--bg2:#0c0c18;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eeeefc;--muted:rgba(238,238,252,0.45);--purple:#8b5cf6;--violet:#6d28d9;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--pink:#ec4899;--orange:#f97316;--gold:#f5a623;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+*{cursor:default;}a,button,[onclick]{cursor:pointer;}
+.bg-fixed{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);animation:orbmove ease-in-out infinite alternate;}
+.o1{width:600px;height:600px;background:rgba(139,92,246,0.07);top:-150px;right:-150px;animation-duration:18s;}
+.o2{width:500px;height:500px;background:rgba(6,182,212,0.05);bottom:-100px;left:-100px;animation-duration:14s;animation-delay:-7s;}
+.o3{width:300px;height:300px;background:rgba(236,72,153,0.05);top:40%;left:30%;animation-duration:22s;animation-delay:-11s;}
+@keyframes orbmove{from{transform:translate(0,0)}to{transform:translate(30px,40px)}}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(6,6,11,0.8);backdrop-filter:blur(30px);border-bottom:1px solid var(--border);}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.15em;font-weight:900;color:white;display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-brand .dot{width:10px;height:10px;background:var(--purple);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0.4)}50%{box-shadow:0 0 0 8px rgba(139,92,246,0)}}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:7px 14px;border-radius:9px;font-size:0.82em;font-weight:600;color:var(--muted);text-decoration:none;transition:all 0.15s;}
+.nav-link:hover{color:white;background:rgba(255,255,255,0.07);}
+.nav-cta{background:var(--purple);color:white;padding:8px 18px;border-radius:10px;font-size:0.82em;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(139,92,246,0.4);transition:all 0.2s;border:none;font-family:'DM Sans',sans-serif;}
+.nav-cta:hover{background:#7c3aed;transform:translateY(-1px);}
+@media(max-width:540px){.nav-links{display:none;}}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(139,92,246,0.12) 0%,transparent 70%);pointer-events:none;}
+.grid-lines{position:absolute;inset:0;pointer-events:none;opacity:0.03;}
+.grid-lines::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,white 0,white 1px,transparent 1px,transparent 60px);}
+.grid-lines::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,white 0,white 1px,transparent 1px,transparent 60px);}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(139,92,246,0.35);border-radius:30px;padding:6px 18px;font-size:0.72em;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:32px;background:rgba(139,92,246,0.08);animation:fadein 0.8s ease both;}
+.ey-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8em,9vw,5.5em);font-weight:900;line-height:1.0;color:white;letter-spacing:-2px;margin-bottom:16px;animation:fadein 0.8s 0.1s ease both;}
+.hero h1 em{color:transparent;-webkit-text-stroke:1px rgba(139,92,246,0.8);font-style:normal;}
+.hero h1 .filled{color:var(--purple);}
+.hero-sub{font-size:clamp(1em,2.5vw,1.2em);color:var(--muted);max-width:580px;margin:0 auto 40px;line-height:1.7;font-weight:400;animation:fadein 0.8s 0.2s ease both;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:60px;animation:fadein 0.8s 0.3s ease both;}
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--violet));color:white;padding:14px 28px;border-radius:14px;font-size:0.95em;font-weight:700;text-decoration:none;box-shadow:0 8px 28px rgba(139,92,246,0.45);transition:all 0.2s;border:none;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:8px;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(139,92,246,0.6);}
+.btn-secondary{background:rgba(255,255,255,0.06);color:white;padding:14px 28px;border-radius:14px;font-size:0.95em;font-weight:700;text-decoration:none;border:1px solid var(--border2);transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+.btn-secondary:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;animation:fadein 0.8s 0.4s ease both;}
+.hstat{text-align:center;}
+.hstat-n{font-family:'Playfair Display',serif;font-size:2.4em;font-weight:900;color:white;line-height:1;display:block;}
+.hstat-l{font-size:0.75em;color:var(--muted);font-weight:500;margin-top:3px;display:block;}
+.section{position:relative;z-index:1;padding:80px 24px;}
+.section-inner{max-width:1000px;margin:0 auto;}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:0.72em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.8em,5vw,3em);font-weight:900;color:white;line-height:1.1;margin-bottom:14px;}
+.sec-title span{color:var(--purple);}
+.sec-sub{font-size:clamp(0.9em,2vw,1.05em);color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:48px;}
+.demo-grid{display:grid;gap:20px;}
+.demo-card{border-radius:24px;overflow:hidden;border:1px solid var(--border);transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;text-decoration:none;display:block;}
+.demo-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 24px 60px rgba(0,0,0,0.5);border-color:var(--border2);}
+.demo-preview{height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;}
+.prev-jardin{background:linear-gradient(160deg,#87ceeb 0%,#a8d8ea 40%,#7bc67e 100%);}
+.prev-jardin::before{content:'☁️';position:absolute;top:14px;left:10%;font-size:2em;animation:cf 6s linear infinite;}
+.prev-jardin::after{content:'☀️';position:absolute;top:10px;right:12%;font-size:2em;animation:sunpulse 3s ease-in-out infinite;}
+@keyframes cf{from{transform:translateX(-10px)}to{transform:translateX(20px)}}
+@keyframes sunpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.prev-primario{background:linear-gradient(160deg,#0d0d1a 0%,#1a1a35 50%,#0f2550 100%);}
+.prev-secundario{background:linear-gradient(160deg,#07070c 0%,#12121f 50%,#1a1030 100%);}
+.prev-claude{font-size:4em;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.4));animation:prevc 3s ease-in-out infinite;position:relative;z-index:1;}
+.demo-card:nth-child(2) .prev-claude{animation-delay:-1s;}
+.demo-card:nth-child(3) .prev-claude{animation-delay:-2s;}
+@keyframes prevc{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.prev-stars{position:absolute;inset:0;}
+.pstar{position:absolute;background:white;border-radius:50%;animation:tw ease-in-out infinite;}
+@keyframes tw{0%,100%{opacity:0.1}50%{opacity:0.9}}
+.prev-badge{position:relative;z-index:1;font-size:0.75em;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:0.5px;}
+.pb-j{background:rgba(255,255,255,0.4);color:#1a5c30;}
+.pb-p{background:rgba(0,210,211,0.25);color:#00d2d3;border:1px solid rgba(0,210,211,0.35);}
+.pb-t{background:rgba(139,92,246,0.25);color:#a78bfa;border:1px solid rgba(139,92,246,0.35);}
+.demo-info{padding:20px 22px;background:rgba(255,255,255,0.04);border-top:1px solid var(--border);}
+.demo-name{font-size:1.05em;font-weight:800;color:white;margin-bottom:4px;}
+.demo-age{font-size:0.78em;color:var(--muted);margin-bottom:10px;}
+.demo-features{display:flex;gap:6px;flex-wrap:wrap;}
+.dfeat{font-size:0.65em;font-weight:700;padding:3px 9px;border-radius:7px;}
+.df-p{background:rgba(139,92,246,0.14);color:#c4b5fd;}
+.df-c{background:rgba(6,182,212,0.14);color:var(--cyan);}
+.df-g{background:rgba(16,185,129,0.14);color:var(--green);}
+.df-a{background:rgba(245,158,11,0.14);color:var(--amber);}
+.df-pk{background:rgba(236,72,153,0.14);color:var(--pink);}
+.demo-arrow{display:block;margin-top:14px;padding:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:10px;text-align:center;font-size:0.8em;font-weight:700;color:var(--muted);transition:all 0.15s;}
+.demo-card:hover .demo-arrow{background:var(--purple);color:white;border-color:var(--purple);}
+.features-section{background:rgba(255,255,255,0.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);}
+.feat-item{background:var(--bg2);padding:32px 24px;transition:background 0.2s;}
+.feat-item:hover{background:rgba(255,255,255,0.04);}
+.feat-ic{font-size:1.8em;margin-bottom:14px;display:block;}
+.feat-t{font-size:0.92em;font-weight:800;color:white;margin-bottom:6px;}
+.feat-d{font-size:0.8em;color:var(--muted);line-height:1.6;}
+.incl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.incl-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:18px;padding:20px 16px;transition:border-color 0.2s,background 0.2s;}
+.incl-card:hover{border-color:var(--border2);background:rgba(255,255,255,0.05);}
+.incl-ic{font-size:2em;margin-bottom:10px;display:block;}
+.incl-t{font-size:0.85em;font-weight:800;color:white;margin-bottom:5px;}
+.incl-d{font-size:0.76em;color:var(--muted);line-height:1.5;}
+.cert-block{background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(139,92,246,0.08));border:1px solid rgba(245,166,35,0.2);border-radius:24px;padding:40px;text-align:center;position:relative;overflow:hidden;}
+.cert-block::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(245,166,35,0.06);border-radius:50%;}
+.cert-icon{font-size:3em;margin-bottom:16px;display:block;}
+.cert-title{font-family:'Playfair Display',serif;font-size:clamp(1.4em,4vw,2.2em);font-weight:900;color:white;margin-bottom:12px;}
+.cert-title span{color:var(--gold);}
+.cert-text{font-size:0.9em;color:var(--muted);max-width:560px;margin:0 auto 24px;line-height:1.7;}
+.cert-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.cert-chip{font-size:0.78em;font-weight:700;padding:6px 14px;border-radius:20px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.25);color:var(--gold);}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.price-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:20px;padding:28px 22px;text-align:center;transition:border-color 0.2s;}
+.price-card:hover{border-color:var(--border2);}
+.price-card.featured{border-color:rgba(139,92,246,0.4);background:rgba(139,92,246,0.07);position:relative;}
+.price-card.featured::before{content:'RECOMENDADO';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--purple);color:white;font-size:0.6em;font-weight:800;padding:3px 12px;border-radius:20px;letter-spacing:1px;}
+.pc-who{font-size:0.7em;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:12px;}
+.pc-num{font-family:'Playfair Display',serif;font-size:2.8em;font-weight:900;color:white;line-height:1;margin-bottom:4px;}
+.featured .pc-num{color:var(--purple);}
+.pc-per{font-size:0.75em;color:var(--muted);margin-bottom:14px;}
+.pc-desc{font-size:0.82em;color:var(--muted);line-height:1.6;}
+.mission-block{background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(6,182,212,0.08));border:1px solid rgba(139,92,246,0.2);border-radius:24px;padding:48px 40px;text-align:center;position:relative;overflow:hidden;}
+.mission-block::before{content:'';position:absolute;top:-80px;left:-80px;width:250px;height:250px;background:rgba(139,92,246,0.05);border-radius:50%;}
+.mission-block::after{content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;background:rgba(6,182,212,0.05);border-radius:50%;}
+.mq{font-family:'Playfair Display',serif;font-size:clamp(1.3em,4vw,2em);font-weight:700;font-style:italic;color:white;line-height:1.5;max-width:700px;margin:0 auto 20px;position:relative;z-index:1;}
+.mq span{color:var(--cyan);}
+.mq-author{font-size:0.82em;color:var(--muted);font-weight:500;position:relative;z-index:1;}
+.cta-section{background:linear-gradient(160deg,rgba(139,92,246,0.15),rgba(6,182,212,0.08));border-top:1px solid var(--border);padding:80px 24px;text-align:center;position:relative;z-index:1;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(139,92,246,0.1) 0%,transparent 70%);}
+.cta-title{font-family:'Playfair Display',serif;font-size:clamp(1.8em,6vw,3.5em);font-weight:900;color:white;line-height:1.1;margin-bottom:16px;position:relative;z-index:1;}
+.cta-title span{color:var(--purple);}
+.cta-sub{font-size:clamp(0.9em,2vw,1.1em);color:var(--muted);max-width:500px;margin:0 auto 36px;line-height:1.7;position:relative;z-index:1;}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;}
+.footer{border-top:1px solid var(--border);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1;}
+.footer-brand{font-family:'Playfair Display',serif;font-weight:900;font-size:1em;color:white;}
+.footer-brand span{color:var(--purple);}
+.footer-note{font-size:0.75em;color:var(--muted);font-style:italic;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.4);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="bg-fixed"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<nav class="nav">
+  <a class="nav-brand" href="#"><div class="dot"></div>Claude Educative</a>
+  <div class="nav-links">
+    <a class="nav-link" href="#demo">Demo</a>
+    <a class="nav-link" href="#features">Funciones</a>
+    <a class="nav-link" href="#inclusion">Inclusión</a>
+    <a class="nav-link" href="#precios">Precios</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Ver Demo →</button>
+</nav>
+<section class="hero">
+  <div class="grid-lines"></div>
+  <div class="hero-eyebrow"><div class="ey-dot"></div>Proyecto presentado a Anthropic · 2026</div>
+  <h1>La primera IA<br><em>compañera</em> de vida<br>de un <span class="filled">ser humano</span></h1>
+  <p class="hero-sub">Claude Educative acompaña el desarrollo completo de cada niño y adolescente — desde los 3 hasta los 17 años. Educación formal, apoyo emocional, preparación para el futuro e inclusión total. Sin precedentes en el mundo.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">🎬 Ver las 4 interfaces</button>
+    <a class="btn-secondary" href="#" target="_blank">📄 Documento completo</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-n">1.2B</span><span class="hstat-l">Niños 3–17 en el mundo</span></div>
+    <div class="hstat"><span class="hstat-n">$4</span><span class="hstat-l">Por familia / mes</span></div>
+    <div class="hstat"><span class="hstat-n">0</span><span class="hstat-l">Competidores directos hoy</span></div>
+    <div class="hstat"><span class="hstat-n">14</span><span class="hstat-l">Años de acompañamiento</span></div>
+  </div>
+</section>
+<section class="section" id="demo">
+  <div class="section-inner">
+    <div class="sec-eyebrow" style="color:var(--purple)">📱 Interfaces</div>
+    <h2 class="sec-title reveal">Cuatro niveles.<br><span>Un solo Claude.</span></h2>
+    <p class="sec-sub reveal">Cada nivel tiene su propia interfaz adaptada por edad. Incluye educación especial con adaptación automática por perfil. Hacé clic en cada una para verla completa.</p>
+    <div class="demo-grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+      <a class="demo-card" href="jardin.html" target="_blank">
+        <div class="demo-preview prev-jardin">
+          <svg width="100" height="100" viewBox="0 0 108 108" class="prev-claude" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#d1b3ff"/><stop offset="100%" stop-color="#7c4dff"/></radialGradient></defs><ellipse cx="54" cy="62" rx="36" ry="37" fill="url(#bg)"/><ellipse cx="54" cy="68" rx="21" ry="19" fill="#f3e5ff" opacity=".7"/><ellipse cx="27" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(-15,27,31)"/><ellipse cx="81" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(15,81,31)"/><ellipse cx="39" cy="51" rx="13" ry="13.5" fill="white"/><ellipse cx="69" cy="51" rx="13" ry="13.5" fill="white"/><circle cx="40" cy="52" r="8" fill="#2d1a6e"/><circle cx="70" cy="52" r="8" fill="#2d1a6e"/><circle cx="43" cy="48" r="3" fill="white" opacity=".9"/><circle cx="73" cy="48" r="3" fill="white" opacity=".9"/><ellipse cx="54" cy="62" rx="5" ry="3.5" fill="#9c6dff"/><path d="M 42 70 Q 54 82 66 70" stroke="#6d28d9" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/><ellipse cx="76" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/></svg>
+          <span class="prev-badge pb-j">🌱 Jardín de Infantes</span>
+        </div>
+        <div class="demo-info">
+          <div class="demo-name">Claude Kids — Jardín</div>
+          <div class="demo-age">3 a 5 años</div>
+          <div class="demo-features"><span class="dfeat df-p">Cuentos animados</span><span class="dfeat df-c">Voz Live</span><span class="dfeat df-g">Juegos</span><span class="dfeat df-a">🔬 Científico</span><span class="dfeat df-pk">Celebraciones</span></div>
+          <div class="demo-arrow">Abrir interfaz Jardín →</div>
+        </div>
+      </a>
+      <a class="demo-card" href="primario.html" target="_blank">
+        <div class="demo-preview prev-primario">
+          <div class="prev-stars"><div class="pstar" style="width:2px;height:2px;top:15%;left:20%;animation-duration:2s;"></div><div class="pstar" style="width:3px;height:3px;top:25%;right:18%;animation-duration:3s;animation-delay:.5s;"></div><div class="pstar" style="width:2px;height:2px;top:60%;left:12%;animation-duration:2.5s;animation-delay:1s;"></div><div class="pstar" style="width:2px;height:2px;top:40%;right:8%;animation-duration:3.5s;animation-delay:.3s;"></div></div>
+          <svg width="92" height="92" viewBox="0 0 82 82" class="prev-claude" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4c1d95"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient><radialGradient id="eg2" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#e9d5ff"/></radialGradient></defs><rect width="82" height="82" rx="22" fill="url(#bg2)"/><ellipse cx="27" cy="35" rx="11" ry="12" fill="url(#eg2)"/><ellipse cx="55" cy="35" rx="11" ry="12" fill="url(#eg2)"/><circle cx="28" cy="36" r="7" fill="#1e1b4b"/><circle cx="56" cy="36" r="7" fill="#1e1b4b"/><circle cx="31" cy="32" r="2.5" fill="white" opacity=".9"/><circle cx="59" cy="32" r="2.5" fill="white" opacity=".9"/><path d="M 28 53 Q 41 63 54 53" stroke="#c4b5fd" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="41" y1="8" x2="41" y2="18" stroke="#a78bfa" stroke-width="2"/><circle cx="41" cy="6" r="4" fill="#c4b5fd"/><ellipse cx="17" cy="48" rx="6" ry="4" fill="#ec4899" opacity=".3"/><ellipse cx="65" cy="48" rx="6" ry="4" fill="#ec4899" opacity=".3"/></svg>
+          <span class="prev-badge pb-p">📚 Primario</span>
+        </div>
+        <div class="demo-info">
+          <div class="demo-name">Claude Kids — Primario</div>
+          <div class="demo-age">6 a 11 años</div>
+          <div class="demo-features"><span class="dfeat df-c">Videos</span><span class="dfeat df-p">Live</span><span class="dfeat df-a">🔬 Científico</span><span class="dfeat df-g">Juegos</span><span class="dfeat df-pk">Carrera</span></div>
+          <div class="demo-arrow">Abrir interfaz Primario →</div>
+        </div>
+      </a>
+      <a class="demo-card" href="secundario.html" target="_blank">
+        <div class="demo-preview prev-secundario">
+          <div class="prev-stars"><div class="pstar" style="width:2px;height:2px;top:12%;left:15%;animation-duration:2.2s;"></div><div class="pstar" style="width:3px;height:3px;top:30%;right:20%;animation-duration:3.1s;animation-delay:.6s;"></div><div class="pstar" style="width:2px;height:2px;top:55%;left:25%;animation-duration:2.7s;animation-delay:1.1s;"></div></div>
+          <svg width="88" height="88" viewBox="0 0 72 72" class="prev-claude" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient><radialGradient id="eg3" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#ddd6fe"/></radialGradient></defs><rect width="72" height="72" rx="21" fill="url(#bg3)"/><ellipse cx="23" cy="31" rx="10" ry="11" fill="url(#eg3)"/><ellipse cx="49" cy="31" rx="10" ry="11" fill="url(#eg3)"/><circle cx="24" cy="32" r="6.5" fill="#1e1b4b"/><circle cx="50" cy="32" r="6.5" fill="#1e1b4b"/><circle cx="27" cy="28" r="2" fill="white" opacity=".9"/><circle cx="53" cy="28" r="2" fill="white" opacity=".9"/><path d="M 23 48 Q 36 57 49 48" stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="36" y1="6" x2="36" y2="14" stroke="#7c3aed" stroke-width="1.5"/><circle cx="36" cy="4" r="3.5" fill="#8b5cf6"/></svg>
+          <span class="prev-badge pb-t">🎓 Secundario</span>
+        </div>
+        <div class="demo-info">
+          <div class="demo-name">Claude Teen — Secundario</div>
+          <div class="demo-age">12 a 17 años · Tech Track</div>
+          <div class="demo-features"><span class="dfeat df-p">💻 Tech Track</span><span class="dfeat df-c">⚗️ Científico</span><span class="dfeat df-g">Orientación</span><span class="dfeat df-a">Debates</span><span class="dfeat df-pk">Vida real</span></div>
+          <div class="demo-arrow">Abrir interfaz Secundario →</div>
+        </div>
+      </a>
+      <a class="demo-card" href="inclusivo.html" target="_blank">
+        <div class="demo-preview" style="background:linear-gradient(160deg,#0a0518 0%,#140a2a 50%,#0d1a0d 100%);">
+          <div class="prev-stars"><div class="pstar" style="width:2px;height:2px;top:15%;left:18%;animation-duration:2.3s;"></div><div class="pstar" style="width:3px;height:3px;top:28%;right:16%;animation-duration:3.2s;animation-delay:.4s;"></div><div class="pstar" style="width:2px;height:2px;top:62%;left:10%;animation-duration:2.6s;animation-delay:.9s;"></div></div>
+          <svg width="92" height="92" viewBox="0 0 108 108" class="prev-claude" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bgI2" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#d1b3ff"/><stop offset="100%" stop-color="#7c4dff"/></radialGradient></defs><ellipse cx="54" cy="62" rx="36" ry="37" fill="url(#bgI2)"/><ellipse cx="54" cy="68" rx="21" ry="19" fill="#f3e5ff" opacity=".7"/><ellipse cx="27" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(-15,27,31)"/><ellipse cx="81" cy="31" rx="10" ry="13" fill="#9c6dff" transform="rotate(15,81,31)"/><ellipse cx="39" cy="51" rx="13" ry="13.5" fill="white"/><ellipse cx="69" cy="51" rx="13" ry="13.5" fill="white"/><circle cx="40" cy="52" r="8" fill="#2d1a6e"/><circle cx="70" cy="52" r="8" fill="#2d1a6e"/><circle cx="43" cy="48" r="3" fill="white" opacity=".9"/><circle cx="73" cy="48" r="3" fill="white" opacity=".9"/><ellipse cx="54" cy="62" rx="5" ry="3.5" fill="#9c6dff"/><path d="M 42 70 Q 54 82 66 70" stroke="#6d28d9" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/><ellipse cx="76" cy="67" rx="8" ry="5" fill="#ff80ab" opacity=".38"/><circle cx="88" cy="18" r="11" fill="#10b981"/><text x="88" y="23" text-anchor="middle" font-size="9" fill="white" font-weight="bold">ON</text></svg>
+          <span class="prev-badge" style="background:rgba(167,139,250,0.3);color:#c4b5fd;border:1px solid rgba(167,139,250,0.4);">💜 Educación Especial</span>
+        </div>
+        <div class="demo-info">
+          <div class="demo-name">Claude Inclusivo</div>
+          <div class="demo-age">TEA · TDAH · Dislexia · Síndrome de Down · Jardín a Secundario</div>
+          <div class="demo-features"><span class="dfeat df-p">🧩 TEA 1/2/3</span><span class="dfeat df-c">⚡ TDAH</span><span class="dfeat df-g">📖 Dislexia</span><span class="dfeat df-a">🌟 Down</span><span class="dfeat df-pk">3 niveles</span></div>
+          <div class="demo-arrow">Abrir Claude Inclusivo →</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="features-section" id="features">
+  <div style="max-width:1000px;margin:0 auto;padding:80px 24px;">
+    <div class="sec-eyebrow reveal" style="color:#10b981">⚡ Diferenciadores</div>
+    <h2 class="sec-title reveal">Lo que <span>ningún competidor</span><br>tiene hoy en el mundo</h2>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-item reveal"><span class="feat-ic">🎓</span><div class="feat-t">Nivel privado para todos</div><div class="feat-d">El estándar del mejor colegio privado para cada niño sin importar su origen.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">🧠</span><div class="feat-t">Siempre quiere más</div><div class="feat-d">Cada respuesta abre una puerta nueva. El conocimiento se vuelve adictivo.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">💜</span><div class="feat-t">Detector de bienestar</div><div class="feat-d">Detecta patrones de angustia en voz y escritura. Abre un espacio seguro. Alerta a padres.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">🔬</span><div class="feat-t">Claude Científico</div><div class="feat-d">Experimentos caseros reales adaptados por edad. Ciencia que se hace en casa ahora mismo.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">🎮</span><div class="feat-t">Aprender sin darse cuenta</div><div class="feat-d">Los juegos de descanso tienen preguntas educativas integradas. El cerebro aprende jugando.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">🎯</span><div class="feat-t">Claude Vocacional</div><div class="feat-d">Detecta intereses y fortalezas a lo largo de los años y orienta hacia una carrera real.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">💻</span><div class="feat-t">Tech Track desde los 14</div><div class="feat-d">Programación, IA, ciberseguridad y diseño UX. Con sueldos reales y roadmap personalizado.</div></div>
+    <div class="feat-item reveal"><span class="feat-ic">🌍</span><div class="feat-t">Sin internet</div><div class="feat-d">Modo offline para zonas rurales. El contenido del día se descarga. Llega a todos.</div></div>
+  </div>
+</section>
+<section class="section" id="inclusion">
+  <div class="section-inner">
+    <div class="sec-eyebrow reveal" style="color:#ec4899">♾️ Inclusión Total</div>
+    <h2 class="sec-title reveal">La misma plataforma<br><span>para todos los niños</span></h2>
+    <p class="sec-sub reveal">La inclusión real no separa a nadie. Claude Inclusivo detecta el perfil al registrarse y adapta todo automáticamente — mismo entorno, misma comunidad.</p>
+    <div class="incl-grid reveal">
+      <div class="incl-card"><span class="incl-ic">🧩</span><div class="incl-t">TEA Nivel 1</div><div class="incl-d">Lenguaje claro, sin ambigüedad. Entorno predecible que reduce la ansiedad.</div></div>
+      <div class="incl-card"><span class="incl-ic">🎨</span><div class="incl-t">TEA Nivel 2</div><div class="incl-d">Mayor apoyo visual, pictogramas y estructura. Claude se adapta al patrón de cada niño.</div></div>
+      <div class="incl-card"><span class="incl-ic">🤝</span><div class="incl-t">TEA Nivel 3</div><div class="incl-d">Rutinas fijas, repetición estructurada y refuerzo positivo. Claude nunca se impacienta.</div></div>
+      <div class="incl-card"><span class="incl-ic">🌟</span><div class="incl-t">Síndrome de Down</div><div class="incl-d">Ritmo propio, más visual, más celebrado. Cada logro reconocido con amor.</div></div>
+      <div class="incl-card"><span class="incl-ic">⚡</span><div class="incl-t">TDAH</div><div class="incl-d">Sesiones cortas, dinámicas, con movimiento. Claude detecta el patrón y se ajusta solo.</div></div>
+      <div class="incl-card"><span class="incl-ic">📖</span><div class="incl-t">Dislexia</div><div class="incl-d">Más audio, textos adaptados. Aprender sin la barrera de la lectura convencional.</div></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="padding-top:0;">
+  <div class="section-inner">
+    <div class="cert-block reveal">
+      <span class="cert-icon">🏆</span>
+      <div class="cert-title">Certificaciones digitales<br><span>que valen más que un título</span></div>
+      <p class="cert-text">El alumno que termina Claude Educative a los 17 años llega al mundo con 14 años de historial académico digital verificable. En el mundo que viene, eso vale más que muchos títulos tradicionales.</p>
+      <div class="cert-chips"><span class="cert-chip">📋 Historial verificable</span><span class="cert-chip">🌍 Reconocimiento global</span><span class="cert-chip">🔐 Imposible de falsificar</span><span class="cert-chip">📈 Valor creciente</span><span class="cert-chip">🎓 Pionero mundial</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="precios">
+  <div class="section-inner">
+    <div class="sec-eyebrow reveal" style="color:#f59e0b">💰 Modelo de Precios</div>
+    <h2 class="sec-title reveal">Accesible para todos.<br><span>Escalable para el mundo.</span></h2>
+    <p class="sec-sub reveal">Un precio que no excluye a nadie. Un modelo que escala a cualquier gobierno del mundo.</p>
+    <div class="price-grid reveal">
+      <div class="price-card"><div class="pc-who">Familias</div><div class="pc-num">$4</div><div class="pc-per">por alumno / mes</div><div class="pc-desc">Lo mismo que un libro escolar. Sin barrera de adopción en ningún país del mundo.</div></div>
+      <div class="price-card featured"><div class="pc-who">Instituciones</div><div class="pc-num">TBD</div><div class="pc-per">por alumno / año</div><div class="pc-desc">Licencias para colegios públicos y privados. Acelera a todos los alumnos al mismo tiempo.</div></div>
+      <div class="price-card"><div class="pc-who">Gobiernos</div><div class="pc-num">↗</div><div class="pc-per">política nacional</div><div class="pc-desc">Un gobierno que lo adopta elimina su brecha educativa de una sola decisión.</div></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="padding-top:0;">
+  <div class="section-inner">
+    <div class="mission-block reveal">
+      <div class="mq">"No solo tu maestra. La primera <span>compañera de vida</span> inteligente de un ser humano — desde los 3 años hasta la universidad y más allá."</div>
+      <div class="mq-author">— Visión de Claude Educative · 2026</div>
+    </div>
+  </div>
+</section>
+<section class="cta-section">
+  <h2 class="cta-title">La ventana está<br><span>abierta ahora.</span></h2>
+  <p class="cta-sub">Nadie más construyó esto. Las cuatro interfaces están listas. El proyecto está documentado. La demo funciona.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">🎬 Ver las interfaces</button>
+    <a class="btn-secondary" href="#" target="_blank">📄 Documento completo</a>
+  </div>
+</section>
+<footer class="footer">
+  <div class="footer-brand">Claude <span>Educative</span></div>
+  <div class="footer-note">Todos los conceptos, interfaces y estructuras son propiedad intelectual del autor · Marzo 2026 · Confidencial</div>
+</footer>
+<script>
+const observer=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('visible'),i*80);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+const statsObserver=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){document.querySelectorAll('.hstat-n').forEach(el=>{const target=el.textContent;if(!isNaN(parseFloat(target))){const num=parseFloat(target);let current=0;const step=num/40;const timer=setInterval(()=>{current+=step;if(current>=num){el.textContent=target;clearInterval(timer);}else el.textContent=(target.includes('.')?current.toFixed(1):Math.floor(current))+(target.includes('B')?'B':target.includes('k')?'k':'');},30);}});statsObserver.disconnect();}});},{threshold:0.5});
+const heroStats=document.querySelector('.hero-stats');
+if(heroStats)statsObserver.observe(heroStats);
+</script>
+</body>
+</html>
+
+
