@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Inclusivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#07080f;--card:rgba(255,255,255,.04);--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);--text:#f0f0f6;--muted:rgba(240,240,246,.45);--purple:#8b5cf6;--violet:#6d28d9;--green:#10b981;--cyan:#06b6d4;--amber:#f59e0b;--pink:#ec4899;--blue:#3b82f6;--orange:#f97316;--red:#ef4444;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:gd 18s ease-in-out infinite alternate;}
+.g1{width:480px;height:480px;background:rgba(139,92,246,.06);top:-100px;right:-80px;}
+.g2{width:360px;height:360px;background:rgba(16,185,129,.04);bottom:-80px;left:-60px;animation-delay:-9s;}
+.g3{width:220px;height:220px;background:rgba(6,182,212,.04);top:45%;left:35%;animation-delay:-5s;}
+@keyframes gd{from{transform:translate(0,0)}to{transform:translate(20px,26px)}}
+.cfw{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
+.cf{position:absolute;animation:cff linear forwards;}
+@keyframes cff{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+/* QUIZ OVERLAY */
+.quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.quiz-overlay.show{display:flex;}
+.quiz-box{background:#0d0d1a;border:1.5px solid rgba(16,185,129,.3);border-radius:28px;padding:28px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.7);}
+.quiz-ic{font-size:3em;margin-bottom:8px;}
+.quiz-cat{font-size:.65em;font-weight:900;color:var(--green);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;}
+.quiz-q{font-size:1.05em;font-weight:700;color:white;margin-bottom:20px;line-height:1.6;}
+.quiz-opts{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:12px;}
+.qopt{padding:14px 16px;border-radius:14px;border:1.5px solid rgba(16,185,129,.2);background:rgba(16,185,129,.06);font-size:.92em;font-weight:700;color:white;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;text-align:left;}
+.qopt:active{transform:scale(.97);}
+.qopt.correct{background:rgba(16,185,129,.2);border-color:var(--green);color:#6ee7b7;}
+.qopt.wrong{background:rgba(239,68,68,.18);border-color:var(--red);color:#fca5a5;}
+.quiz-pts{font-size:.82em;font-weight:800;color:var(--amber);min-height:24px;margin-bottom:4px;}
+.quiz-close{margin-top:10px;background:linear-gradient(135deg,var(--green),var(--cyan));color:white;border:none;border-radius:14px;padding:13px 32px;font-size:.92em;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 18px rgba(16,185,129,.35);}
+/* ONBOARDING */
+.onboard{position:fixed;inset:0;z-index:500;background:rgba(7,8,15,.98);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:32px 20px 40px;}
+.onboard.hidden{display:none;}
+.ob-step{width:100%;max-width:400px;display:none;}
+.ob-step.active{display:flex;flex-direction:column;align-items:center;}
+.step-dots{display:flex;gap:8px;margin-bottom:28px;}
+.sdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;}
+.sdot.on{background:var(--green);width:22px;border-radius:4px;}
+.ob-logo{font-family:'Syne',sans-serif;font-size:1.5em;font-weight:800;color:white;text-align:center;margin-bottom:6px;}
+.ob-logo span{color:var(--green);}
+.ob-sub{font-size:.85em;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.7;}
+.ob-label{font-size:.78em;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;width:100%;}
+.ob-name{width:100%;background:rgba(255,255,255,.07);border:1.5px solid var(--border2);border-radius:14px;padding:14px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.05em;font-weight:700;outline:none;text-align:center;transition:border-color .2s;margin-bottom:6px;letter-spacing:.5px;}
+.ob-name::placeholder{color:var(--muted);}
+.ob-name:focus{border-color:var(--green);}
+.ob-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;}
+.ob-profile{padding:14px 10px;border-radius:14px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;text-align:center;}
+.ob-profile.on{border-color:var(--green);background:rgba(16,185,129,.1);}
+.ob-pic{font-size:1.8em;margin-bottom:6px;}
+.ob-pname{font-size:.82em;font-weight:800;color:white;}
+.ob-pdesc{font-size:.68em;color:var(--muted);margin-top:3px;line-height:1.4;}
+.ob-btns{display:flex;gap:10px;width:100%;margin-top:22px;}
+.ob-back{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:14px;padding:14px;font-size:.9em;font-weight:800;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;}
+.ob-next{flex:2;background:linear-gradient(135deg,var(--green),var(--cyan));color:white;border:none;border-radius:14px;padding:14px;font-size:.95em;font-weight:900;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 6px 22px rgba(16,185,129,.35);transition:transform .15s;}
+.ob-next:active{transform:scale(.97);}
+/* APP */
+.app{position:relative;z-index:1;max-width:440px;margin:0 auto;padding:13px;min-height:100vh;display:flex;flex-direction:column;gap:11px;padding-bottom:88px;}
+/* HDR */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(30px);}
+.brand{display:flex;align-items:center;gap:9px;}
+.bic{width:38px;height:38px;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1em;box-shadow:0 4px 14px rgba(16,185,129,.3);}
+.bnm{font-family:'Syne',sans-serif;font-size:1em;font-weight:800;color:white;}
+.bsub{font-size:.68em;color:var(--green);font-weight:600;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.pts-badge{background:linear-gradient(135deg,var(--amber),#d97706);color:white;font-size:.75em;font-weight:800;padding:5px 11px;border-radius:20px;}
+.uchip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 11px 4px 4px;cursor:pointer;}
+.uav{width:28px;height:28px;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9em;}
+.unm{font-size:.75em;font-weight:700;}
+/* PROFILE BADGE */
+.profile-badge{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:14px;border:1px solid rgba(16,185,129,.2);background:rgba(16,185,129,.05);}
+.pb-icon{font-size:1.5em;}
+.pb-info{flex:1;}
+.pb-name{font-size:.82em;font-weight:800;color:white;}
+.pb-desc{font-size:.7em;color:var(--muted);}
+.pb-edit{font-size:.72em;font-weight:700;color:var(--green);cursor:pointer;}
+/* MODE STRIP */
+.day-strip{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;}
+.day-strip::-webkit-scrollbar{display:none}
+.daypill{flex-shrink:0;padding:8px 15px;border-radius:11px;font-size:.8em;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid var(--border);color:var(--muted);}
+.daypill.active-pill{background:var(--green);color:var(--bg);border-color:var(--green);box-shadow:0 3px 14px rgba(16,185,129,.35);}
+/* CLAUDE CARD */
+.claude-card{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.07));border:1px solid rgba(16,185,129,.2);border-radius:22px;padding:17px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;position:relative;overflow:hidden;}
+.claude-card::after{content:'CLAUDE INCLUSIVO';position:absolute;bottom:10px;right:12px;font-family:'Syne',sans-serif;font-size:.44em;font-weight:800;color:rgba(16,185,129,.1);letter-spacing:3px;}
+.cav.happy{animation:cfloat 4s ease-in-out infinite;}
+.cav.excited{animation:wiggle .5s ease-in-out infinite;}
+.cav.calm{animation:sway 4s ease-in-out infinite;}
+.cav.proud{animation:fup 2s ease-in-out infinite;}
+@keyframes cfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes wiggle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes fup{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.cstatus{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:3px 9px;font-size:.68em;font-weight:700;color:var(--green);margin-bottom:6px;}
+.cdot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.cmood{font-size:.72em;font-weight:700;color:var(--green);margin-bottom:5px;}
+.cmsg{font-size:.93em;font-weight:600;color:white;line-height:1.6;margin-bottom:10px;}
+.cmsg span{color:var(--cyan);font-weight:700;}
+.askbar{display:flex;gap:7px;}
+.askin{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:11px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85em;outline:none;transition:border-color .2s;}
+.askin::placeholder{color:var(--muted);}
+.askin:focus{border-color:var(--green);}
+.askbtn{width:38px;height:38px;background:var(--green);border:none;border-radius:11px;cursor:pointer;font-size:.9em;box-shadow:0 3px 12px rgba(16,185,129,.35);flex-shrink:0;transition:transform .15s;}
+.askbtn:active{transform:scale(.9);}
+.expr-row{display:flex;gap:5px;margin-top:10px;}
+.ebtn{flex:1;padding:7px 3px;border-radius:9px;border:1px solid var(--border);background:var(--card);font-size:.72em;cursor:pointer;transition:all .15s;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--muted);}
+.ebtn.on{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3);color:white;}
+.ebtn:active{transform:scale(.93);}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px 9px;text-align:center;}
+.sn{font-family:'Syne',sans-serif;font-size:1.5em;font-weight:800;line-height:1;margin-bottom:3px;}
+.sl{font-size:.66em;color:var(--muted);font-weight:600;}
+.sng{color:var(--green)}.snc{color:var(--cyan)}.sna{color:var(--amber)}
+/* CELEB */
+.celeb-btn{background:linear-gradient(135deg,var(--green),var(--cyan));border:none;border-radius:16px;padding:14px 17px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;box-shadow:0 5px 20px rgba(16,185,129,.3);transition:transform .15s;}
+.celeb-btn:active{transform:scale(.97);}
+.cbic{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;border:1px solid rgba(255,255,255,.2);}
+.cbinfo{flex:1;color:white;}
+.cbt{font-size:.9em;font-weight:800;margin-bottom:2px;}
+.cbs{font-size:.72em;opacity:.8;}
+/* LIVE */
+.live{background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(6,182,212,.2));border:1.5px solid rgba(16,185,129,.3);border-radius:17px;padding:15px 17px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;position:relative;overflow:hidden;transition:transform .15s;}
+.live:active{transform:scale(.98);}
+.liwrap{width:46px;height:46px;flex-shrink:0;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.3);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;position:relative;}
+.liwrap::after{content:'';position:absolute;inset:-5px;border-radius:17px;border:1px solid rgba(16,185,129,.3);animation:lr 2s ease-in-out infinite;}
+@keyframes lr{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:0;transform:scale(1.1)}}
+.liinfo{flex:1;color:white;}
+.lirow{display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.lititle{font-size:.96em;font-weight:800;}
+.lipill{background:rgba(16,185,129,.3);font-size:.54em;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:1px;}
+.lisub{font-size:.76em;opacity:.7;}
+/* COMUNICACIÓN AUMENTATIVA */
+.caa-sec{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(236,72,153,.08));border:1px solid rgba(139,92,246,.22);border-radius:24px;overflow:hidden;}
+.caa-hdr{background:linear-gradient(135deg,#6d28d9,#be185d);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+.caa-ic{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.caa-info{flex:1;}
+.caa-title{font-family:'Syne',sans-serif;font-size:.95em;font-weight:800;color:white;margin-bottom:2px;}
+.caa-sub{font-size:.72em;color:rgba(255,255,255,.8);}
+.caa-body{padding:14px;}
+.caa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.caa-btn{background:rgba(255,255,255,.05);border:1px solid rgba(139,92,246,.2);border-radius:13px;padding:10px 5px;text-align:center;cursor:pointer;transition:transform .15s;}
+.caa-btn:active{transform:scale(.93);}
+.caa-em{font-size:1.7em;display:block;margin-bottom:3px;}
+.caa-lbl{font-size:.62em;font-weight:800;color:rgba(255,255,255,.8);}
+.caa-builder{background:rgba(255,255,255,.04);border:1px solid rgba(139,92,246,.15);border-radius:13px;padding:11px 13px;margin-bottom:10px;font-size:.85em;color:var(--muted);min-height:38px;font-weight:600;}
+.caa-actions{display:flex;gap:7px;}
+.caa-act{flex:1;padding:9px;border-radius:11px;border:1px solid var(--border2);background:rgba(255,255,255,.05);font-size:.75em;font-weight:800;color:white;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.caa-speak{background:linear-gradient(135deg,var(--purple),var(--pink));box-shadow:0 3px 12px rgba(139,92,246,.3);border:none;}
+/* REST */
+.rest-sec{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.07));border:1px solid rgba(16,185,129,.2);border-radius:20px;overflow:hidden;}
+.resth{background:linear-gradient(135deg,#065f46,#0e7490);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.restic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.restt{font-size:.9em;font-weight:800;color:white;}
+.rests{font-size:.72em;opacity:.85;color:white;}
+.rest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px;}
+.gcard{background:rgba(255,255,255,.04);border:1px solid rgba(16,185,129,.13);border-radius:14px;padding:13px 7px;text-align:center;cursor:pointer;transition:transform .15s;}
+.gcard:active{transform:scale(.92);}
+.gic{font-size:2em;display:block;margin-bottom:5px;}
+.gnm{font-size:.7em;font-weight:700;color:var(--text);line-height:1.3;}
+.gtag{display:inline-block;margin-top:3px;font-size:.57em;font-weight:800;background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);padding:2px 5px;border-radius:5px;}
+/* HERRAMIENTAS */
+.tools-sec{background:linear-gradient(135deg,rgba(6,182,212,.09),rgba(59,130,246,.07));border:1px solid rgba(6,182,212,.2);border-radius:20px;overflow:hidden;}
+.tools-hdr{background:linear-gradient(135deg,#0e7490,#1d4ed8);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.tools-hic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.tools-t{font-size:.9em;font-weight:800;color:white;}
+.tools-s{font-size:.72em;opacity:.85;color:white;}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:13px;}
+.tool-card{background:rgba(255,255,255,.04);border:1px solid rgba(6,182,212,.15);border-radius:14px;padding:13px 11px;cursor:pointer;transition:transform .15s;}
+.tool-card:active{transform:scale(.96);}
+.tool-ic{font-size:1.5em;margin-bottom:6px;}
+.tool-nm{font-size:.8em;font-weight:800;color:white;margin-bottom:3px;}
+.tool-desc{font-size:.68em;color:var(--muted);line-height:1.4;}
+/* LOGROS */
+.logros-sec{background:linear-gradient(135deg,rgba(245,158,11,.09),rgba(249,115,22,.07));border:1px solid rgba(245,158,11,.2);border-radius:20px;overflow:hidden;}
+.logros-hdr{background:linear-gradient(135deg,#92400e,#c2410c);padding:12px 15px;display:flex;align-items:center;gap:9px;}
+.logros-ic{width:37px;height:37px;background:rgba(255,255,255,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;}
+.logros-t{font-size:.9em;font-weight:800;color:white;}
+.logros-s{font-size:.72em;opacity:.85;color:white;}
+.logros-scroll{display:flex;gap:9px;overflow-x:auto;padding:13px;scrollbar-width:none;}
+.logros-scroll::-webkit-scrollbar{display:none}
+.logro{flex-shrink:0;width:130px;background:rgba(255,255,255,.04);border:1px solid rgba(245,158,11,.18);border-radius:14px;padding:12px 9px;text-align:center;cursor:pointer;transition:transform .15s;}
+.logro:active{transform:scale(.93);}
+.logro-ic{font-size:2.2em;margin-bottom:6px;display:block;}
+.logro-nm{font-size:.72em;font-weight:800;color:white;line-height:1.3;margin-bottom:3px;}
+.logro-desc{font-size:.62em;color:var(--muted);line-height:1.4;}
+.logro-xp{display:inline-block;margin-top:4px;font-size:.6em;font-weight:900;padding:2px 6px;border-radius:6px;background:rgba(245,158,11,.15);color:var(--amber);}
+/* PROGRESO */
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;}
+.prog-top{display:flex;align-items:center;gap:10px;margin-bottom:13px;}
+.prog-ic{width:40px;height:40px;background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.15));border:1px solid rgba(16,185,129,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2em;}
+.prog-head{font-size:.88em;font-weight:800;color:white;}
+.prog-sub{font-size:.7em;color:var(--muted);}
+.prog-bars{display:flex;flex-direction:column;gap:8px;}
+.pb-row{display:flex;align-items:center;gap:9px;}
+.pb-label{font-size:.73em;font-weight:700;color:rgba(255,255,255,.8);width:90px;flex-shrink:0;}
+.pb-track{flex:1;height:7px;background:rgba(255,255,255,.07);border-radius:7px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:7px;}
+.pb-pct{font-size:.7em;font-weight:800;width:34px;text-align:right;}
+/* BIENESTAR */
+.bien-card{background:linear-gradient(135deg,rgba(236,72,153,.09),rgba(139,92,246,.07));border:1px solid rgba(236,72,153,.18);border-radius:18px;padding:15px;}
+.bien-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.bien-ic{width:40px;height:40px;background:rgba(236,72,153,.14);border:1px solid rgba(236,72,153,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2em;}
+.bien-head{font-size:.88em;font-weight:800;color:white;}
+.bien-sub{font-size:.7em;color:rgba(236,72,153,.75);font-weight:600;}
+.bien-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.bchip{font-size:.74em;font-weight:700;padding:6px 12px;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+/* FAMILIAS */
+.fam-card{background:linear-gradient(135deg,rgba(59,130,246,.09),rgba(6,182,212,.07));border:1px solid rgba(59,130,246,.2);border-radius:18px;padding:15px;}
+.fam-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.fam-ic{width:40px;height:40px;background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2em;}
+.fam-head{font-size:.88em;font-weight:800;color:white;}
+.fam-sub{font-size:.7em;color:rgba(59,130,246,.75);font-weight:600;}
+.fam-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.fchip{font-size:.74em;font-weight:700;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+/* STREAK */
+.streak{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.07));border:1px solid rgba(16,185,129,.18);border-radius:17px;padding:13px;display:flex;align-items:center;gap:12px;}
+.sf{font-size:2em;animation:flame .9s ease-in-out infinite alternate;}
+@keyframes flame{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.1) rotate(4deg)}}
+.si2{flex:1;}
+.snum{font-family:'Syne',sans-serif;font-size:1.7em;font-weight:800;color:var(--green);line-height:1;}
+.slbl{font-size:.73em;color:var(--muted);font-weight:600;}
+.sdrow{display:flex;gap:5px;}
+.dd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.66em;font-weight:800;}
+.dd.done{background:var(--green);color:var(--bg);}
+.dd.today{background:var(--cyan);color:white;animation:tp 1s infinite;}
+@keyframes tp{0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,.4)}50%{box-shadow:0 0 0 5px rgba(6,182,212,0)}}
+.dd.pen{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);}
+/* NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,8,15,.93);border-top:1px solid var(--border);backdrop-filter:blur(30px);padding:10px 18px 18px;display:flex;justify-content:space-around;z-index:100;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px;border-radius:10px;cursor:pointer;flex:1;transition:background .15s;}
+.ni.on{background:rgba(16,185,129,.1);}
+.nic{font-size:1.2em;}
+.nil{font-size:.58em;font-weight:700;color:var(--muted);}
+.ni.on .nil{color:var(--green);}
+</style>
+</head>
+<body>
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <div class="quiz-ic" id="qIc">🎨</div>
+    <div class="quiz-cat" id="qCat">APRENDIZAJE</div>
+    <div class="quiz-q" id="qQ">Pregunta...</div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-pts" id="qPts"></div>
+    <button class="quiz-close" onclick="closeQuiz()">¡Seguir jugando! 🌟</button>
+  </div>
+</div>
+<div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+<div class="cfw" id="cfw"></div>
+
+<!-- ONBOARDING -->
+<div class="onboard" id="onboard">
+  <div class="ob-step active" id="step1">
+    <div class="step-dots"><div class="sdot on"></div><div class="sdot"></div></div>
+    <div class="ob-logo">Claude <span>Inclusivo</span></div>
+    <div class="ob-sub">Un espacio hecho para cada persona, a su propio ritmo y con sus propias herramientas 💚</div>
+    <div class="ob-label">¿Cómo te llamás?</div>
+    <input class="ob-name" id="ob-name" placeholder="Tu nombre..." maxlength="20"/>
+    <div class="ob-btns"><button class="ob-next" style="flex:1" onclick="goStep(2)">Siguiente →</button></div>
+  </div>
+  <div class="ob-step" id="step2">
+    <div class="step-dots"><div class="sdot"></div><div class="sdot on"></div></div>
+    <div class="ob-logo" style="margin-bottom:6px;">¿Cómo aprendés mejor?</div>
+    <div class="ob-sub">Claude adapta todo — el lenguaje, el ritmo, las actividades — para vos 💚</div>
+    <div class="ob-profile-grid">
+      <div class="ob-profile on" onclick="selProfile(this,'tea1','🧩','TEA Nivel 1','Lenguaje claro y preciso')"><div class="ob-pic">🧩</div><div class="ob-pname">TEA Nivel 1</div><div class="ob-pdesc">Lenguaje claro y preciso</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'tea2','🌈','TEA Nivel 2','Con apoyo visual y CAA')"><div class="ob-pic">🌈</div><div class="ob-pname">TEA Nivel 2</div><div class="ob-pdesc">Con apoyo visual y CAA</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'tdah','⚡','TDAH','Sesiones cortas y dinámicas')"><div class="ob-pic">⚡</div><div class="ob-pname">TDAH</div><div class="ob-pdesc">Sesiones cortas y dinámicas</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'dis','📖','Dislexia','Fuente y audio adaptados')"><div class="ob-pic">📖</div><div class="ob-pname">Dislexia</div><div class="ob-pdesc">Fuente y audio adaptados</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'disc','♿','Discapacidad motriz','Acceso por voz o switch')"><div class="ob-pic">♿</div><div class="ob-pname">Discapacidad motriz</div><div class="ob-pdesc">Acceso por voz o switch</div></div>
+      <div class="ob-profile" onclick="selProfile(this,'multi','💫','Múltiple','Combinación personalizada')"><div class="ob-pic">💫</div><div class="ob-pname">Múltiple</div><div class="ob-pdesc">Combinación personalizada</div></div>
+    </div>
+    <div class="ob-btns"><button class="ob-back" onclick="goStep(1)">← Atrás</button><button class="ob-next" onclick="startApp()">¡Empezar! →</button></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="mainApp" style="display:none;">
+
+  <div class="hdr">
+    <div class="brand"><div class="bic">💚</div><div><div class="bnm">Claude Inclusivo</div><div class="bsub" id="hdr-sub">Educación para todos</div></div></div>
+    <div class="hdr-r">
+      <div class="pts-badge">⭐ <span id="pts-val">1.420</span> pts</div>
+      <div class="uchip" onclick="document.getElementById('onboard').classList.remove('hidden');document.getElementById('mainApp').style.display='none';">
+        <div class="uav" id="user-av">🧩</div><span class="unm" id="user-name">Sofía</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-badge">
+    <div class="pb-icon" id="pb-icon">🧩</div>
+    <div class="pb-info"><div class="pb-name" id="pb-name">Perfil: TEA Nivel 1</div><div class="pb-desc" id="pb-desc">Claude adaptado completamente a vos</div></div>
+    <div class="pb-edit" onclick="document.getElementById('onboard').classList.remove('hidden');document.getElementById('mainApp').style.display='none';">Editar →</div>
+  </div>
+
+  <div class="day-strip">
+    <div class="daypill active-pill" onclick="setMode('aprender',this)">📚 Aprender</div>
+    <div class="daypill" onclick="setMode('jugar',this)">🎮 Jugar</div>
+    <div class="daypill" onclick="setMode('comunicar',this)">💬 Comunicar</div>
+    <div class="daypill" onclick="setMode('calmar',this)">🌿 Calmarme</div>
+    <div class="daypill" onclick="setMode('logros',this)">🏆 Logros</div>
+  </div>
+
+  <div class="claude-card">
+    <div class="cav calm" id="claudeChar">
+      <svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bgi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#065f46"/></linearGradient><radialGradient id="egi" cx="35%" cy="35%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#d1fae5"/></radialGradient></defs>
+        <rect width="72" height="72" rx="21" fill="url(#bgi)"/>
+        <ellipse cx="23" cy="31" rx="10" ry="11" fill="url(#egi)"/>
+        <ellipse cx="49" cy="31" rx="10" ry="11" fill="url(#egi)"/>
+        <circle cx="24" cy="32" r="6.5" fill="#064e3b"/><circle cx="50" cy="32" r="6.5" fill="#064e3b"/>
+        <circle cx="27" cy="28" r="2" fill="white" opacity=".9"/><circle cx="53" cy="28" r="2" fill="white" opacity=".9"/>
+        <path d="M 24 47 Q 36 55 48 47" stroke="#6ee7b7" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="36" y1="6" x2="36" y2="14" stroke="#10b981" stroke-width="1.5"/><circle cx="36" cy="4" r="3.5" fill="#10b981"/>
+        <ellipse cx="12" cy="42" rx="5" ry="3.5" fill="#06b6d4" opacity=".25"/><ellipse cx="60" cy="42" rx="5" ry="3.5" fill="#06b6d4" opacity=".25"/>
+        <circle cx="60" cy="12" r="9" fill="#10b981"/><text x="60" y="16" text-anchor="middle" font-size="8" fill="white" font-weight="bold">ON</text>
+      </svg>
+    </div>
+    <div>
+      <div class="cstatus"><div class="cdot"></div>En línea</div>
+      <div class="cmood" id="moodLabel">🌿 Tranquilo y disponible</div>
+      <div class="cmsg" id="bubbleText">Hola. Hoy podemos hacer <span>matemática</span> o <span>comunicación</span>. ¿Qué preferís?</div>
+      <div class="askbar"><input class="askin" id="mainInput" placeholder="Escribí o dictá tu pregunta..."/><button class="askbtn">➤</button></div>
+      <div class="expr-row">
+        <button class="ebtn on" onclick="setExpr('calm',this)">🌿 Calma</button>
+        <button class="ebtn" onclick="setExpr('happy',this)">😊 Feliz</button>
+        <button class="ebtn" onclick="setExpr('excited',this)">⚡ Activo</button>
+        <button class="ebtn" onclick="setExpr('proud',this)">🌟 Orgulloso</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sn sng">12🔥</div><div class="sl">Días seguidos</div></div>
+    <div class="sc"><div class="sn snc">8</div><div class="sl">Logros</div></div>
+    <div class="sc"><div class="sn sna">1.4k</div><div class="sl">Puntos</div></div>
+  </div>
+
+  <button class="celeb-btn" onclick="celebrate()">
+    <div class="cbic">🌟</div>
+    <div class="cbinfo"><div class="cbt">¡Lo logré!</div><div class="cbs">Claude celebra cada avance tuyo 🎊</div></div>
+  </button>
+
+  <button class="live">
+    <div class="liwrap">🎤</div>
+    <div class="liinfo"><div class="lirow"><span class="lititle">Hablar con Claude</span><span class="lipill">EN VIVO</span></div><div class="lisub">Preguntá, contá, aprendé — en voz alta</div></div>
+    <span style="color:rgba(255,255,255,.4);font-size:1.2em">›</span>
+  </button>
+
+  <!-- CAA -->
+  <div class="caa-sec">
+    <div class="caa-hdr"><div class="caa-ic">💬</div><div class="caa-info"><div class="caa-title">Comunicación Aumentativa</div><div class="caa-sub">Armá frases tocando los símbolos</div></div></div>
+    <div class="caa-body">
+      <div class="caa-grid">
+        <div class="caa-btn" onclick="addWord('Quiero')"><span class="caa-em">🙋</span><span class="caa-lbl">Quiero</span></div>
+        <div class="caa-btn" onclick="addWord('No quiero')"><span class="caa-em">🚫</span><span class="caa-lbl">No quiero</span></div>
+        <div class="caa-btn" onclick="addWord('Ayuda')"><span class="caa-em">🆘</span><span class="caa-lbl">Ayuda</span></div>
+        <div class="caa-btn" onclick="addWord('Bien')"><span class="caa-em">👍</span><span class="caa-lbl">Bien</span></div>
+        <div class="caa-btn" onclick="addWord('Mal')"><span class="caa-em">😔</span><span class="caa-lbl">Mal</span></div>
+        <div class="caa-btn" onclick="addWord('Descanso')"><span class="caa-em">😴</span><span class="caa-lbl">Descanso</span></div>
+        <div class="caa-btn" onclick="addWord('Jugar')"><span class="caa-em">🎮</span><span class="caa-lbl">Jugar</span></div>
+        <div class="caa-btn" onclick="addWord('Comer')"><span class="caa-em">🍎</span><span class="caa-lbl">Comer</span></div>
+      </div>
+      <div class="caa-builder" id="caaBuilder">Tocá los símbolos para armar tu frase...</div>
+      <div class="caa-actions">
+        <div class="caa-act" onclick="clearCaa()">🗑️ Borrar</div>
+        <div class="caa-act caa-speak" onclick="speakCaa()">🔊 Decir en voz alta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JUEGOS EDUCATIVOS -->
+  <div class="rest-sec">
+    <div class="resth"><div class="restic">🎮</div><div><div class="restt">Juegos de Aprendizaje</div><div class="rests">¡Jugás y aprendés al mismo tiempo!</div></div></div>
+    <div class="rest-grid">
+      <div class="gcard" onclick="openQuiz('colores')"><span class="gic">🎨</span><span class="gnm">Colores y formas</span><span class="gtag">Visual</span></div>
+      <div class="gcard" onclick="openQuiz('numeros')"><span class="gic">🔢</span><span class="gnm">Números mágicos</span><span class="gtag">Matemática</span></div>
+      <div class="gcard" onclick="openQuiz('emociones')"><span class="gic">😊</span><span class="gnm">¿Cómo me siento?</span><span class="gtag">Emociones</span></div>
+      <div class="gcard" onclick="openQuiz('naturaleza')"><span class="gic">🌿</span><span class="gnm">Naturaleza viva</span><span class="gtag">Ciencias</span></div>
+      <div class="gcard" onclick="openQuiz('letras')"><span class="gic">🔤</span><span class="gnm">Letras y palabras</span><span class="gtag">Lengua</span></div>
+      <div class="gcard" onclick="openQuiz('cuerpo')"><span class="gic">🫀</span><span class="gnm">Mi cuerpo</span><span class="gtag">Salud</span></div>
+    </div>
+  </div>
+
+  <!-- HERRAMIENTAS -->
+  <div class="tools-sec">
+    <div class="tools-hdr"><div class="tools-hic">🛠️</div><div><div class="tools-t">Herramientas de Acceso</div><div class="tools-s">Ajustes para que todo funcione mejor para vos</div></div></div>
+    <div class="tools-grid">
+      <div class="tool-card"><div class="tool-ic">🔊</div><div class="tool-nm">Lector de texto</div><div class="tool-desc">Claude lee todo en voz alta para vos</div></div>
+      <div class="tool-card"><div class="tool-ic">🔡</div><div class="tool-nm">Texto grande</div><div class="tool-desc">Letras más grandes y espaciadas</div></div>
+      <div class="tool-card"><div class="tool-ic">🎨</div><div class="tool-nm">Alto contraste</div><div class="tool-desc">Colores más fáciles de ver</div></div>
+      <div class="tool-card"><div class="tool-ic">⏱️</div><div class="tool-nm">Tiempo extra</div><div class="tool-desc">Sin límite de tiempo en actividades</div></div>
+      <div class="tool-card"><div class="tool-ic">🖼️</div><div class="tool-nm">Más imágenes</div><div class="tool-desc">Todo explicado con dibujos y fotos</div></div>
+      <div class="tool-card"><div class="tool-ic">🌙</div><div class="tool-nm">Modo descanso</div><div class="tool-desc">Pantalla suave para los ojos</div></div>
+    </div>
+  </div>
+
+  <!-- LOGROS -->
+  <div class="logros-sec">
+    <div class="logros-hdr"><div class="logros-ic">🏆</div><div><div class="logros-t">Mis Logros</div><div class="logros-s">Cada avance cuenta — ¡todos son reales!</div></div></div>
+    <div class="logros-scroll">
+      <div class="logro"><span class="logro-ic">⭐</span><div class="logro-nm">Primera semana</div><div class="logro-desc">7 días seguidos aprendiendo</div><span class="logro-xp">+100 XP</span></div>
+      <div class="logro"><span class="logro-ic">💬</span><div class="logro-nm">Comunicador</div><div class="logro-desc">Usaste CAA 10 veces</div><span class="logro-xp">+80 XP</span></div>
+      <div class="logro"><span class="logro-ic">🧩</span><div class="logro-nm">Explorador</div><div class="logro-desc">Probaste 5 tipos de juegos</div><span class="logro-xp">+120 XP</span></div>
+      <div class="logro"><span class="logro-ic">🌟</span><div class="logro-nm">Valiente</div><div class="logro-desc">Intentaste algo nuevo</div><span class="logro-xp">+60 XP</span></div>
+      <div class="logro"><span class="logro-ic">💚</span><div class="logro-nm">Calma total</div><div class="logro-desc">Usaste técnicas de calma</div><span class="logro-xp">+70 XP</span></div>
+    </div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="prog-card">
+    <div class="prog-top"><div class="prog-ic">📊</div><div><div class="prog-head">Tu progreso — Claude te ve avanzar</div><div class="prog-sub">Construido día a día, a tu ritmo</div></div></div>
+    <div class="prog-bars">
+      <div class="pb-row"><div class="pb-label">🔢 Números</div><div class="pb-track"><div class="pb-fill" style="width:75%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div><div class="pb-pct" style="color:var(--green)">75%</div></div>
+      <div class="pb-row"><div class="pb-label">🔤 Letras</div><div class="pb-track"><div class="pb-fill" style="width:60%;background:linear-gradient(90deg,var(--cyan),var(--blue))"></div></div><div class="pb-pct" style="color:var(--cyan)">60%</div></div>
+      <div class="pb-row"><div class="pb-label">😊 Emociones</div><div class="pb-track"><div class="pb-fill" style="width:88%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div><div class="pb-pct" style="color:var(--pink)">88%</div></div>
+      <div class="pb-row"><div class="pb-label">💬 Comunicar</div><div class="pb-track"><div class="pb-fill" style="width:50%;background:linear-gradient(90deg,var(--amber),var(--orange))"></div></div><div class="pb-pct" style="color:var(--amber)">50%</div></div>
+      <div class="pb-row"><div class="pb-label">🌿 Naturaleza</div><div class="pb-track"><div class="pb-fill" style="width:40%;background:linear-gradient(90deg,var(--green),var(--amber))"></div></div><div class="pb-pct" style="color:var(--green)">40%</div></div>
+    </div>
+  </div>
+
+  <!-- BIENESTAR -->
+  <div class="bien-card">
+    <div class="bien-top"><div class="bien-ic">💜</div><div><div class="bien-head">Bienestar y Calma</div><div class="bien-sub">Técnicas cuando algo se siente difícil</div></div></div>
+    <div class="bien-chips">
+      <span class="bchip">🌬️ Respirar</span>
+      <span class="bchip">🎵 Música calma</span>
+      <span class="bchip">🖐️ Ejercicio sensorial</span>
+      <span class="bchip">🧸 Objeto favorito</span>
+      <span class="bchip">🌈 Visualización</span>
+      <span class="bchip">⏱️ Tomarse un tiempo</span>
+    </div>
+  </div>
+
+  <!-- FAMILIAS -->
+  <div class="fam-card">
+    <div class="fam-top"><div class="fam-ic">👨‍👩‍👧</div><div><div class="fam-head">Para Familias y Docentes</div><div class="fam-sub">Recursos y seguimiento de avances</div></div></div>
+    <div class="fam-chips">
+      <span class="fchip">📋 Ver progreso</span>
+      <span class="fchip">🎯 Objetivos del mes</span>
+      <span class="fchip">📞 Hablar con Claude</span>
+      <span class="fchip">📚 Recursos</span>
+      <span class="fchip">🏫 Conectar con escuela</span>
+    </div>
+  </div>
+
+  <div class="streak">
+    <div class="sf">💚</div>
+    <div class="si2"><div class="snum">12 días</div><div class="slbl">aprendiendo seguido</div></div>
+    <div class="sdrow">
+      <div class="dd done">L</div><div class="dd done">M</div><div class="dd done">M</div>
+      <div class="dd today">J</div><div class="dd pen">V</div><div class="dd pen">S</div><div class="dd pen">D</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bnav">
+  <div class="ni on"><span class="nic">🏠</span><span class="nil">Inicio</span></div>
+  <div class="ni"><span class="nic">💬</span><span class="nil">CAA</span></div>
+  <div class="ni"><span class="nic">🎮</span><span class="nil">Juegos</span></div>
+  <div class="ni"><span class="nic">🏆</span><span class="nil">Logros</span></div>
+  <div class="ni"><span class="nic">👤</span><span class="nil">Perfil</span></div>
+</div>
+
+<script>
+let selectedProfile={key:'tea1',icon:'🧩',name:'TEA Nivel 1',desc:'Lenguaje claro y preciso'};
+let caaWords=[];
+
+function goStep(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));document.getElementById('step'+n).classList.add('active');}
+function selProfile(el,key,icon,name,desc){document.querySelectorAll('.ob-profile').forEach(e=>e.classList.remove('on'));el.classList.add('on');selectedProfile={key,icon,name,desc};}
+
+const profileMsgs={
+  tea1:(n)=>`Hola ${n}. Hoy podemos hacer <span>matemática</span> o <span>comunicación</span>. ¿Qué preferís?`,
+  tea2:(n)=>`Hola ${n} 🌈. Toco los símbolos para hablar con Claude. ¿Qué hacemos hoy?`,
+  tdah:(n)=>`¡${n}! ⚡ Actividad de 5 minutos: <span>números</span>. ¡Rápido y divertido!`,
+  dis:(n)=>`Hola ${n} 🔊. Texto grande activado. ¿Empezamos con <span>letras</span>?`,
+  disc:(n)=>`Hola ${n}. Control por voz activado. ¿Qué querés hacer hoy?`,
+  multi:(n)=>`Hola ${n} 💫. Claude está configurado para vos. ¿Empezamos?`
+};
+
+function startApp(){
+  const nm=document.getElementById('ob-name').value.trim()||'Sofía';
+  document.getElementById('user-name').textContent=nm;
+  document.getElementById('user-av').textContent=selectedProfile.icon;
+  document.getElementById('pb-icon').textContent=selectedProfile.icon;
+  document.getElementById('pb-name').textContent='Perfil: '+selectedProfile.name;
+  document.getElementById('pb-desc').textContent=selectedProfile.desc;
+  document.getElementById('hdr-sub').textContent=selectedProfile.name;
+  document.getElementById('bubbleText').innerHTML=(profileMsgs[selectedProfile.key]||profileMsgs.tea1)(nm);
+  document.getElementById('onboard').classList.add('hidden');
+  document.getElementById('mainApp').style.display='flex';
+}
+
+const expr={
+  calm:{anim:'calm',mood:'🌿 Tranquilo y disponible'},
+  happy:{anim:'happy',mood:'😊 Muy contento hoy'},
+  excited:{anim:'excited',mood:'⚡ ¡Con energía!'},
+  proud:{anim:'proud',mood:'🌟 Orgulloso de vos'}
+};
+function setExpr(type,btn){
+  document.getElementById('claudeChar').className='cav '+expr[type].anim;
+  document.getElementById('moodLabel').textContent=expr[type].mood;
+  document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+const modes={
+  aprender:{type:'calm',msg:'Hola. ¿Qué querés aprender hoy? Podemos hacer <span>números</span>, <span>letras</span> o <span>naturaleza</span>.'},
+  jugar:{type:'happy',msg:'¡Modo juego! Tocá cualquier juego de abajo. <span>¡Todo es divertido y también aprendés!</span> 🎮'},
+  comunicar:{type:'calm',msg:'Modo <span>comunicación</span>. Usá los símbolos de abajo para armar tu frase. Claude te ayuda.'},
+  calmar:{type:'calm',msg:'Modo calma activado 🌿. <span>Respirá despacio.</span> Estoy acá. No hay apuro. Todo está bien.'},
+  logros:{type:'proud',msg:'¡Mirá todo lo que lograste! <span>¡Cada punto cuenta!</span> Estoy muy orgulloso/a de vos 🌟'}
+};
+function setMode(mode,btn){
+  document.querySelectorAll('.daypill').forEach(b=>b.classList.remove('active-pill'));
+  btn.classList.add('active-pill');
+  const m=modes[mode];
+  document.getElementById('claudeChar').className='cav '+expr[m.type].anim;
+  document.getElementById('moodLabel').textContent=expr[m.type].mood;
+  document.getElementById('bubbleText').innerHTML=m.msg;
+  document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('on'));
+  const map={calm:0,happy:1,excited:2,proud:3};
+  document.querySelectorAll('.ebtn')[map[m.type]||0].classList.add('on');
+}
+
+function addWord(w){
+  caaWords.push(w);
+  const el=document.getElementById('caaBuilder');
+  el.textContent=caaWords.join(' ');
+  el.style.color='white';
+}
+function clearCaa(){caaWords=[];const el=document.getElementById('caaBuilder');el.textContent='Tocá los símbolos para armar tu frase...';el.style.color='';}
+function speakCaa(){if(caaWords.length&&'speechSynthesis' in window){const u=new SpeechSynthesisUtterance(caaWords.join(' '));u.lang='es-AR';speechSynthesis.speak(u);}}
+
+function celebrate(){
+  const w=document.getElementById('cfw');w.innerHTML='';w.style.display='block';
+  const colors=['#10b981','#06b6d4','#8b5cf6','#f59e0b','#ec4899','#3b82f6'];
+  for(let i=0;i<90;i++){
+    const cf=document.createElement('div');cf.className='cf';
+    cf.style.cssText=`left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;border-radius:${Math.random()>.5?'50%':'4px'};animation:cff ${1.5+Math.random()*2}s ${Math.random()*.8}s linear forwards;`;
+    w.appendChild(cf);
+  }
+  setExpr('excited',document.querySelectorAll('.ebtn')[2]);
+  setTimeout(()=>{w.style.display='none';setExpr('proud',document.querySelectorAll('.ebtn')[3]);},3200);
+}
+
+// QUIZ SYSTEM — adaptado para educación inclusiva (opciones en columna, texto grande)
+const quizzes={
+  colores:{ic:'🎨',cat:'COLORES Y FORMAS',preguntas:[
+    {q:'¿De qué color es el cielo?',opts:['Rojo 🔴','Azul 🔵','Verde 🟢','Amarillo 🟡'],ok:1},
+    {q:'¿Qué forma tiene una pelota?',opts:['Cuadrado','Triángulo','Círculo','Rectángulo'],ok:2},
+    {q:'¿De qué color es el pasto?',opts:['Morado','Naranja','Azul','Verde 🟢'],ok:3},
+    {q:'¿Cuántos lados tiene un triángulo?',opts:['2','3','4','5'],ok:1},
+    {q:'¿De qué color es el sol?',opts:['Azul','Verde','Amarillo ☀️','Rosa'],ok:2}
+  ]},
+  numeros:{ic:'🔢',cat:'NÚMEROS MÁGICOS',preguntas:[
+    {q:'¿Cuánto es 2 + 2?',opts:['3','4','5','6'],ok:1},
+    {q:'¿Qué número viene después del 5?',opts:['4','5','6','7'],ok:2},
+    {q:'¿Cuántos dedos tenés en una mano?',opts:['3','4','5','6'],ok:2},
+    {q:'¿Cuánto es 10 - 3?',opts:['5','6','7','8'],ok:2},
+    {q:'¿Cuál es el número más grande?',opts:['3','7','5','9'],ok:3}
+  ]},
+  emociones:{ic:'😊',cat:'¿CÓMO ME SIENTO?',preguntas:[
+    {q:'Cuando recibo un regalo, me siento...',opts:['Triste 😢','Enojado 😠','Contento 😊','Asustado 😨'],ok:2},
+    {q:'Cuando me caigo y me duele, me siento...',opts:['Feliz','Triste 😢','Aburrido','Emocionado'],ok:1},
+    {q:'¿Qué hago si estoy enojado?',opts:['Gritar fuerte','Respirar despacio 🌬️','Correr sin parar','Llorar sin parar'],ok:1},
+    {q:'Cuando termino algo difícil, me siento...',opts:['Triste','Orgulloso/a 🌟','Asustado/a','Aburrido/a'],ok:1},
+    {q:'Si algo me da miedo, puedo...',opts:['Quedarme solo/a','Pedir ayuda 🆘','Esconderme siempre','Ignorarlo'],ok:1}
+  ]},
+  naturaleza:{ic:'🌿',cat:'NATURALEZA VIVA',preguntas:[
+    {q:'¿Qué necesita una planta para crecer?',opts:['Solo piedras','Agua y sol ☀️','Solo oscuridad','Solo viento'],ok:1},
+    {q:'¿Qué animal hace "miau"?',opts:['Perro 🐕','Pájaro 🐦','Gato 🐱','Vaca 🐄'],ok:2},
+    {q:'¿De dónde viene la lluvia?',opts:['Del suelo','Del sol','De las nubes ☁️','Del mar directamente'],ok:2},
+    {q:'¿Cuántas patas tiene un perro?',opts:['2','3','4','6'],ok:2},
+    {q:'¿Qué animal vive en el mar?',opts:['León 🦁','Pez 🐟','Elefante 🐘','Caballo 🐴'],ok:1}
+  ]},
+  letras:{ic:'🔤',cat:'LETRAS Y PALABRAS',preguntas:[
+    {q:'¿Con qué letra empieza "MAMÁ"?',opts:['P','M','S','T'],ok:1},
+    {q:'¿Cuántas letras tiene "SOL"?',opts:['2','3','4','5'],ok:1},
+    {q:'¿Con qué letra empieza "PERRO"?',opts:['M','B','P','T'],ok:2},
+    {q:'¿Qué es una vocal?',opts:['B, C, D','A, E, I, O, U','Solo la A','Las letras del final'],ok:1},
+    {q:'¿Con qué letra empieza "AGUA"?',opts:['E','O','A','I'],ok:2}
+  ]},
+  cuerpo:{ic:'🫀',cat:'MI CUERPO',preguntas:[
+    {q:'¿Con qué vemos?',opts:['Con la nariz','Con los ojos 👀','Con la boca','Con las manos'],ok:1},
+    {q:'¿Con qué escuchamos?',opts:['Con los ojos','Con la nariz','Con las orejas 👂','Con los pies'],ok:2},
+    {q:'¿Cuántos ojos tenemos?',opts:['1','2','3','4'],ok:1},
+    {q:'¿Qué hacemos para respirar?',opts:['Comemos','Dormimos','Tomamos aire 🌬️','Caminamos'],ok:2},
+    {q:'¿Para qué sirven los pies?',opts:['Para ver','Para oír','Para oler','Para caminar 🦶'],ok:3}
+  ]}
+};
+let currentQuiz=null,currentQ=0,quizPts=0;
+function openQuiz(tipo){
+  currentQuiz=quizzes[tipo];currentQ=0;quizPts=0;
+  document.getElementById('qIc').textContent=currentQuiz.ic;
+  document.getElementById('qCat').textContent=currentQuiz.cat;
+  showQuestion();
+  document.getElementById('quizOverlay').classList.add('show');
+}
+function showQuestion(){
+  if(currentQ>=currentQuiz.preguntas.length){
+    document.getElementById('qQ').textContent='¡Terminaste! 🎉 ¡Ganaste '+quizPts+' puntos!';
+    document.getElementById('qOpts').innerHTML='';
+    document.getElementById('qPts').textContent='';
+    return;
+  }
+  const p=currentQuiz.preguntas[currentQ];
+  document.getElementById('qQ').textContent=p.q;
+  document.getElementById('qPts').textContent='';
+  const opts=document.getElementById('qOpts');
+  opts.innerHTML='';
+  p.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.textContent=o;
+    b.onclick=()=>{
+      document.querySelectorAll('.qopt').forEach(x=>x.style.pointerEvents='none');
+      if(i===p.ok){b.classList.add('correct');quizPts+=25;document.getElementById('qPts').textContent='✅ ¡Muy bien! +25 puntos 🌟';}
+      else{b.classList.add('wrong');document.querySelectorAll('.qopt')[p.ok].classList.add('correct');document.getElementById('qPts').textContent='💙 Casi — ¡la próxima seguro!';}
+      currentQ++;setTimeout(showQuestion,1800);
+    };
+    opts.appendChild(b);
+  });
+}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('show');}
+</script>
+</body>
+</html>
